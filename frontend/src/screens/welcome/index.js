@@ -19,14 +19,17 @@ function WelcomeScreen() {
         <Image
           style={styles.welcomeImage}
           resizeMode="contain"
-          source={require("../../images/welcome_image.jpg")}
+          source={require("../../images/welcome_image.png")}
         />
-
         {/* title */}
-        <View style={{ gap: 20 }}>
-          <Text style={styles.title}>APP NAME!</Text>
+        <View style={{ gap: 20, flex: 1 }}>
+          <Image
+            style={styles.welcomeTitle}
+            resizeMode="contain"
+            source={require("../../images/welcome_title.png")}
+          />
           <Text style={styles.punchline}>
-            App Tagline. App Tagline. App Tagline. App Tagline.
+            Unlock your perfect swing with our UNIVERSE No.1 AI Coach 🤩 !
           </Text>
         </View>
 

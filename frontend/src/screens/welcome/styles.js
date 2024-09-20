@@ -6,32 +6,33 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: "center",
-    justifyContent: "space-around",
+    justifyContent: "space-between",
     backgroundColor: "white",
     paddingHorizontal: wp(5),
   },
   welcomeImage: {
-    height: hp(30),
+    marginTop: hp(10),
+    height: hp(25),
     width: wp(100),
     alignSelf: "center",
   },
-  title: {
-    color: theme.colors.text,
-    fontSize: hp(4),
-    textAlign: "center",
-    fontWeight: theme.fonts.extraBold,
+  welcomeTitle: {
+    height: hp(10),
+    width: wp(90),
+    alignSelf: "flex-start",
   },
   punchline: {
     textAlign: "center",
-    paddingHorizontal: wp(10),
-    fontSize: hp(1.7),
-    color: theme.colors.text,
+    fontSize: hp(2),
+    color: theme.colors.textLight,
+    fontWeight: theme.fonts.bold,
+    marginTop: hp(15),
   },
   footer: {
     gap: 30,
     width: "100%",
+    marginBottom: hp(10),
   },
-
   bottomTextContainer: {
     flexDirection: "row",
     justifyContent: "center",
