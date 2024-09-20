@@ -46,7 +46,7 @@ const ProfileScreen = () => {
 
   useEffect(() => {
     const focusListener = navigation.addListener("focus", () => {
-      getPosts();
+      // getPosts();
     });
 
     return () => {

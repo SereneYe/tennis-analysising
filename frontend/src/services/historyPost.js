@@ -42,6 +42,8 @@ export const fetchCurrentPost = async () => {
   await importFirestoreFunctions();
   try {
     const userId = auth.currentUser.uid;
+    //TODO: fetch posts from Backend
+
     const rawVideoCollection = collection(firestore, "raw-video");
     const q = query(rawVideoCollection, where("user_id", "==", userId));
     const querySnapshot = await getDocs(q);

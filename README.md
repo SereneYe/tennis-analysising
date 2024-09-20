@@ -12,7 +12,7 @@
 
 3. Connecting to phone
    Android: Scan QR code in Expo
-   IOS: Use the default scanner of ios ( No scanner in ios expo)
+   IOS: Use the default scanner of ios (No scanner in ios expo)
 
 <!-- CURRENT FUNCTIONS OF PROJECT -->
 
