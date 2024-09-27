@@ -1,11 +1,4 @@
-import {
-  View,
-  Text,
-  ScrollView,
-  Pressable,
-  TextInput,
-  Alert,
-} from "react-native";
+import { View, Text, ScrollView, Pressable, Alert } from "react-native";
 import React, { useEffect, useState } from "react";
 import ScreenWrapper from "../../components/screenWrapper/screenWrapper";
 import Button from "../../components/button/index";

@@ -1,12 +1,12 @@
 import { View, Text, TouchableOpacity, Alert } from "react-native";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { theme } from "../../constants/theme";
-import { hp, stripHtmlTags, wp } from "../../constants/common";
+import { hp, wp } from "../../constants/common";
 import RenderHtml from "react-native-render-html";
 import { Video } from "expo-av";
 import Avatar from "../avartar/index";
 import { styles, tagsStyles, shadowStyles } from "./styles";
-import { EditIcon, ThreeDotIcon, TrashIcon } from "../icons/icons";
+import { ThreeDotIcon, TrashIcon } from "../icons/icons";
 
 const HistoryCard = ({
   item,
@@ -16,7 +16,6 @@ const HistoryCard = ({
   hasShadow = true,
   showDelete = false,
   onDelete = () => {},
-  onEdit = () => {},
 }) => {
   const htmlBody = { html: item?.body };
 
@@ -36,7 +35,7 @@ const HistoryCard = ({
   };
 
   const openPostDetails = () => {
-    navigation.navigate("postDetails", { postId: item?.id });
+    navigation.navigate("historyDetail", { historyId: item.id });
   };
 
   return (
@@ -60,7 +59,6 @@ const HistoryCard = ({
             </Text>
           </View>
         </View>
-
         {/* actions */}
         {showMoreIcon && (
           <TouchableOpacity onPress={openPostDetails}>
@@ -72,11 +70,9 @@ const HistoryCard = ({
             />
           </TouchableOpacity>
         )}
-        {showDelete && currentUser.id == item.userId && (
+
+        {showDelete && (
           <View style={styles.actions}>
-            <TouchableOpacity onPress={() => onEdit(item)}>
-              <EditIcon name="edit" size={hp(2.5)} color={theme.colors.text} />
-            </TouchableOpacity>
             <TouchableOpacity onPress={handlePostDelete}>
               <TrashIcon
                 name="delete"

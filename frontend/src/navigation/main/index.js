@@ -9,6 +9,7 @@ import VideoPlayerScreen from "../../screens/video";
 
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
+import { CardStyleInterpolators } from "@react-navigation/stack";
 import SignUpScreen from "../../screens/signUp";
 import { useEffect } from "react";
 import { userAuthStateListener } from "../../redux/actions/auth";
@@ -18,6 +19,7 @@ import ProfileScreen from "../../screens/profile";
 import EditProfileScreen from "../../screens/editProfile";
 import HistoryScreen from "../../screens/history/index";
 import SelectScreen from "../../screens/cameraSelect";
+import HistoryDetailScreen from "../../screens/historyDetail";
 
 const Stack = createStackNavigator();
 
@@ -107,6 +109,15 @@ export default function Route() {
               name="history"
               component={HistoryScreen}
               options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="historyDetail"
+              component={HistoryDetailScreen}
+              options={{
+                headerShown: false,
+                cardStyleInterpolator:
+                  CardStyleInterpolators.forModalPresentationIOS,
+              }}
             />
             <Stack.Screen
               name="select"
