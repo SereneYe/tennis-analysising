@@ -8,7 +8,7 @@ import {
 } from "expo-camera";
 import styles from "./styles";
 import { useDispatch } from "react-redux";
-import { useIsFocused, useNavigation } from "@react-navigation/native";
+import { useIsFocused } from "@react-navigation/native";
 import * as ImagePicker from "expo-image-picker";
 import * as MediaLibrary from "expo-media-library";
 import Analysising from "../analysising";
@@ -17,8 +17,9 @@ import CircularProgress from "react-native-circular-progress-indicator";
 import CountdownBar from "react-native-countdown-bar";
 import { GalleryIcon, ArrowLeftIcon } from "../../components/icons/icons";
 import Button from "../../components/button";
+import uuid from "uuid-random";
 
-export default function CameraScreen() {
+export default function CameraScreen({ route, navigation }) {
   const [facing, setFacing] = useState("back");
   const [cameraPermission, requestCameraPermission] = useCameraPermissions();
   const [audioPermission, requestAudioPermission] = useMicrophonePermissions();
@@ -30,10 +31,10 @@ export default function CameraScreen() {
   const cameraRef = useRef(null);
   const [isCameraReady, setIsCameraReady] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
-  const [requestRunning, setRequestRunning] = useState(false);
-  const navigation = useNavigation();
+  const [finishedRecording, setFinishedRecording] = useState(false);
   const dispatch = useDispatch();
   const [showProgress, setShowProgress] = useState(false);
+  const { practiceType, turnPreference } = route.params;
 
   if (!cameraPermission || !audioPermission || !mediaLibraryPermission) {
     return <View />;
@@ -45,12 +46,13 @@ export default function CameraScreen() {
     !mediaLibraryPermission.granted
   ) {
     return (
-      <View style={styles.container}>
+      <View style={styles.permissionContainer}>
         <Text style={styles.message}>
           We need your permission to use the camera, microphone, and media
           library
         </Text>
         <Button
+          style={styles.permissionButton}
           onPress={() => {
             requestCameraPermission();
             requestAudioPermission();
@@ -82,38 +84,65 @@ export default function CameraScreen() {
     setFacing((current) => (current === "back" ? "front" : "back"));
   }
 
-  const startRecording = async () => {
-    if (!cameraRef.current) return;
+  const toggleRecording = async () => {
+    let roundId = uuid();
+    let videoAddresses = [];
+    for (let i = 0; i < turnPreference; i++) {
+      console.log("Turns:", i);
+      setShowProgress(true);
+      console.log("Waiting for 5 seconds...");
+      await new Promise((resolve) => setTimeout(resolve, 5000));
+      setShowProgress(false);
+      const videoAddr = await recordVideo();
+      if (videoAddr) {
+        videoAddresses.push(videoAddr);
+      }
+    }
+    setFinishedRecording(true);
+    await stopRecording();
+    for (let i = 0; i < videoAddresses.length; i++) {
+      console.log("Dispatching video:", videoAddresses[i]);
+      await dispatchVideo(
+        videoAddresses[i],
+        roundId,
+        turnPreference,
+        practiceType
+      );
+    }
+    setFinishedRecording(false);
+  };
 
-    console.log("3 seconds passed. Start recording video.");
-
+  const recordVideo = async () => {
+    if (!cameraRef.current) return null;
     setIsRecording(true);
-
     const videoPromise = await cameraRef.current.recordAsync({
-      maxDuration: 11,
+      maxDuration: 5,
       codec: "avc1",
     });
 
     if (videoPromise) {
       console.log("Video recorded", videoPromise.uri);
+      setIsRecording(false);
       await saveVideoToLibrary(videoPromise.uri);
-      const description = "Uploaded from camera recording";
-      console.log("Video recorded", videoPromise.uri);
-      setRequestRunning(true);
-      await dispatch(createPost(description, videoPromise.uri))
-        .then(() => {
-          console.log(
-            "createPost dispatched successfully. Navigating to top..."
-          );
-        })
-        .catch((error) => {
-          console.log("Dispatching createPost failed:", error);
-        })
-        .finally(() => {
-          setIsRecording(false);
-          setRequestRunning(false);
-        });
+      return videoPromise.uri;
     }
+    return null;
+  };
+
+  const dispatchVideo = async (
+    videoURI,
+    roundId,
+    turnPreference,
+    practiceType
+  ) => {
+    await dispatch(createPost(videoURI, roundId, turnPreference, practiceType))
+      .then(() => {
+        console.log("createPost dispatched successfully. Navigating to top...");
+      })
+      .catch((error) => {
+        console.log("Dispatching createPost failed:", error);
+      })
+      .finally(() => {});
   };
 
   const stopRecording = async () => {
@@ -128,20 +157,6 @@ export default function CameraScreen() {
     }
   };
 
-  const toggleRecording = async () => {
-    if (isRecording) {
-      await stopRecording();
-    } else {
-      setShowProgress(true);
-      console.log("Waiting for 3 seconds...");
-      // Delay the recording for 3 seconds
-      await new Promise((resolve) => setTimeout(resolve, 3000));
-      setShowProgress(false);
-      await startRecording();
-    }
-  };
-
-  // Save video to local storage
   const saveVideoToLibrary = async (uri) => {
     try {
       await MediaLibrary.saveToLibraryAsync(uri);
@@ -151,7 +166,7 @@ export default function CameraScreen() {
     }
   };
 
-  if (requestRunning) {
+  if (finishedRecording) {
     return <Analysising />;
   }
 
@@ -192,7 +207,7 @@ export default function CameraScreen() {
           {isRecording && (
             <View style={styles.countdownBarContainer}>
               <CountdownBar
-                time={10}
+                time={5}
                 height="3"
                 BgColor="rgba(139,0,0,0.8)"
                 BgColorIn="rgba(0, 0, 0, 0)"
@@ -205,12 +220,12 @@ export default function CameraScreen() {
               <CircularProgress
                 value={0}
                 radius={80}
-                maxValue={3}
-                initialValue={3}
+                maxValue={5}
+                initialValue={5}
                 progressValueColor={"#fff"}
                 activeStrokeWidth={15}
                 inActiveStrokeWidth={15}
-                duration={3000}
+                duration={5000}
               />
             </View>
           ) : null}

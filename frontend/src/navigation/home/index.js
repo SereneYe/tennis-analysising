@@ -11,6 +11,7 @@ import { theme } from "../../constants/theme";
 import HomeScreen from "../../screens/home";
 import ProfileScreen from "../../screens/profile";
 import HistoryScreen from "../../screens/history";
+import SelectScreen from "../../screens/cameraSelect";
 
 const Tab = createMaterialBottomTabNavigator();
 
@@ -41,13 +42,7 @@ export default function MainScreen() {
 
       <Tab.Screen
         name="Add"
-        component={EmptyScreen}
-        listeners={({ navigation }) => ({
-          tabPress: (event) => {
-            event.preventDefault();
-            navigation.navigate("camera");
-          },
-        })}
+        component={SelectScreen}
         options={{
           tabBarIcon: ({ color }) => <AddIcon color={color} />,
         }}

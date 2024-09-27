@@ -1,7 +1,7 @@
-import { getDoc, updateDoc } from "firebase/firestore";
+import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
 import uuid from "uuid-random";
 
-let getAuth, auth, getFirestore, firestore;
+let getAuth, auth, getFirestore, firestore, updateDoc;
 
 const importFirestoreFunctions = async () => {
   const appModule = await import("../../App");
@@ -11,6 +11,7 @@ const importFirestoreFunctions = async () => {
   firestore = getFirestore();
   doc = firestoreModule.doc;
   setDoc = firestoreModule.setDoc;
+  getDoc = firestoreModule.getDoc;
   updateDoc = firestoreModule.updateDoc;
 };
 

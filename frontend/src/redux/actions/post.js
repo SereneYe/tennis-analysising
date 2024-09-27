@@ -39,80 +39,90 @@ initializeFirebase();
 
 let storageRef;
 
-export const createPost = (description, video) => async (dispatch) =>
-  new Promise(async (resolve, reject) => {
-    if (!auth.currentUser || !firestore) {
-      await importAuthFunctions();
-      await importFirestoreFunctions();
-    }
+export const createPost =
+  (video, roundId, turnPreference, practiceType) => async (dispatch) =>
+    new Promise(async (resolve, reject) => {
+      if (!auth.currentUser || !firestore) {
+        await importAuthFunctions();
+        await importFirestoreFunctions();
+      }
 
-    let storagePostId = uuid();
-    storageRef = ref(storage, `posts/${auth.currentUser.uid}/${storagePostId}`);
-    const metadata = {
-      contentType: "video/mp4",
-    };
+      let storagePostId = uuid();
+      storageRef = ref(
+        storage,
+        `posts/${auth.currentUser.uid}/${storagePostId}`
+      );
+      const metadata = {
+        contentType: "video/mp4",
+      };
 
-    console.log("Starting fetching video from filesystem.");
-    // Read the file from the filesystem
-    fetch(video)
-      .then((response) => response.blob())
-      .then((blob) => {
-        console.log("Blob created, starting upload.");
+      console.log("Starting fetching video from filesystem.");
+      // Read the file from the filesystem
+      fetch(video)
+        .then((response) => response.blob())
+        .then((blob) => {
+          console.log("Blob created, starting upload.");
 
-        const uploadTask = uploadBytesResumable(storageRef, blob, metadata);
+          const uploadTask = uploadBytesResumable(storageRef, blob, metadata);
 
-        uploadTask.on(
-          "state_changed",
-          (snapshot) => {},
-          (error) => {
-            console.error("Upload failed.", error);
-            reject();
-          },
-          () => {
-            getDownloadURL(uploadTask.snapshot.ref).then(
-              async (downloadURL) => {
-                console.log("File available at", downloadURL);
+          uploadTask.on(
+            "state_changed",
+            (snapshot) => {},
+            (error) => {
+              console.error("Upload failed.", error);
+              reject();
+            },
+            () => {
+              getDownloadURL(uploadTask.snapshot.ref).then(
+                async (downloadURL) => {
+                  console.log("File available at", downloadURL);
 
-                const date = Timestamp.now().toDate();
-                const options = {
-                  year: "numeric",
-                  month: "2-digit",
-                  day: "2-digit",
-                  hour: "2-digit",
-                  minute: "2-digit",
-                };
-                const formattedDate = date.toLocaleDateString(
-                  undefined,
-                  options
-                );
-                let postData = {
-                  user_id: auth.currentUser.uid,
-                  video_id: storagePostId,
-                  url: downloadURL,
-                  title: description,
-                  create_at: formattedDate,
-                };
-                console.log("Post data created", postData);
+                  const date = Timestamp.now().toDate();
+                  const options = {
+                    year: "numeric",
+                    month: "2-digit",
+                    day: "2-digit",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  };
+                  const formattedDate = date.toLocaleDateString(
+                    undefined,
+                    options
+                  );
+                  const description = `Practice type: ${practiceType}, Turn preference: ${turnPreference} ${formattedDate}`;
 
-                await setDoc(
-                  doc(firestore, "raw-video", storagePostId),
-                  postData
-                );
+                  let postData = {
+                    round_id: roundId,
+                    user_id: auth.currentUser.uid,
+                    video_id: storagePostId,
+                    url: downloadURL,
+                    title: description,
+                    turn_preference: turnPreference,
+                    practice_type: practiceType,
+                    description: description,
+                    create_at: formattedDate,
+                  };
+                  console.log("Post data created", postData);
 
-                // TODO: Uncomment this line to send the post data to the backend
-                // await sendPostData(postData, reject);
+                  await setDoc(
+                    doc(firestore, "raw-video", storagePostId),
+                    postData
+                  );
 
-                resolve();
-              }
-            );
-          }
-        );
-      })
-      .catch((error) => {
-        console.error("Error fetching video from filesystem", error);
-        reject();
-      });
-  });
+                  // TODO: Uncomment this line to send the post data to the backend
+                  // await sendPostData(postData, reject);
+
+                  resolve();
+                }
+              );
+            }
+          );
+        })
+        .catch((error) => {
+          console.error("Error fetching video from filesystem", error);
+          reject();
+        });
+    });
 
 async function sendPostData(postData, reject) {
   console.log("POST request started.");

@@ -1,13 +1,26 @@
 import { StyleSheet } from "react-native";
+import { theme } from "../../constants/theme";
+import { hp, wp } from "../../constants/common";
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "center",
   },
+  permissionContainer: {
+    flex: 1,
+    justifyContent: "center",
+  },
   message: {
     textAlign: "center",
-    paddingBottom: 10,
+    fontSize: hp(2),
+    paddingBottom: hp(2),
+    width: "80%",
+    alignSelf: "center",
+  },
+  permissionButton: {
+    borderRadius: 5,
+    marginHorizontal: wp(1),
   },
   camera: {
     flex: 1,

@@ -17,6 +17,7 @@ import { MailIcon } from "../../components/icons/icons";
 import ProfileScreen from "../../screens/profile";
 import EditProfileScreen from "../../screens/editProfile";
 import HistoryScreen from "../../screens/history/index";
+import SelectScreen from "../../screens/cameraSelect";
 
 const Stack = createStackNavigator();
 
@@ -105,6 +106,11 @@ export default function Route() {
             <Stack.Screen
               name="history"
               component={HistoryScreen}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="select"
+              component={SelectScreen}
               options={{ headerShown: false }}
             />
             <Stack.Screen

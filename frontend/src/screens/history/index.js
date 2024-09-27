@@ -1,4 +1,4 @@
-import { View, Text, Pressable, ScrollView, FlatList } from "react-native";
+import { View, Text, Pressable, FlatList } from "react-native";
 import React, { useCallback, useEffect, useState } from "react";
 import ScreenWrapper from "../../components/screenWrapper/screenWrapper";
 import { theme } from "../../constants/theme";
@@ -58,7 +58,7 @@ const HistoryScreen = () => {
             <Text style={styles.title}>{user.name}</Text>
           </Pressable>
           <View style={styles.icons}>
-            <Pressable onPress={() => navigation.navigate("camera")}>
+            <Pressable onPress={() => navigation.navigate("select")}>
               <AddIcon
                 name="plus"
                 size={hp(3.2)}
