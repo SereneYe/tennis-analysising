@@ -20,6 +20,7 @@ import EditProfileScreen from "../../screens/editProfile";
 import HistoryScreen from "../../screens/history/index";
 import SelectScreen from "../../screens/cameraSelect";
 import HistoryDetailScreen from "../../screens/historyDetail";
+import RelaxDetailScreen from "../../screens/relaxDetails";
 
 const Stack = createStackNavigator();
 
@@ -127,6 +128,11 @@ export default function Route() {
             <Stack.Screen
               name="test"
               component={TestScreen}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="relaxDetail"
+              component={RelaxDetailScreen}
               options={{ headerShown: false }}
             />
           </>

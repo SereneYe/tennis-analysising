@@ -18,6 +18,7 @@ import CountdownBar from "react-native-countdown-bar";
 import { GalleryIcon, ArrowLeftIcon } from "../../components/icons/icons";
 import Button from "../../components/button";
 import uuid from "uuid-random";
+import RelaxDetailScreen from "../relaxDetails";
 
 export default function CameraScreen({ route, navigation }) {
   const [facing, setFacing] = useState("back");
@@ -167,7 +168,7 @@ export default function CameraScreen({ route, navigation }) {
   };
 
   if (finishedRecording) {
-    return <Analysising />;
+    return <RelaxDetailScreen />;
   }
 
   return (
