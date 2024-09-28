@@ -21,6 +21,7 @@ import HistoryScreen from "../../screens/history/index";
 import SelectScreen from "../../screens/cameraSelect";
 import HistoryDetailScreen from "../../screens/historyDetail";
 import RelaxDetailScreen from "../../screens/relaxDetails";
+import ResultScreen from "../../screens/result";
 
 const Stack = createStackNavigator();
 
@@ -133,6 +134,11 @@ export default function Route() {
             <Stack.Screen
               name="relaxDetail"
               component={RelaxDetailScreen}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="result"
+              component={ResultScreen}
               options={{ headerShown: false }}
             />
           </>

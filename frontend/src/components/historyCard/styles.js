@@ -1,6 +1,6 @@
 import { StyleSheet } from "react-native";
 import { theme } from "../../constants/theme";
-import { hp } from "../../constants/common";
+import { hp, wp } from "../../constants/common";
 
 export const textStyle = {
   color: theme.colors.dark,
@@ -56,6 +56,12 @@ export const styles = StyleSheet.create({
     color: theme.colors.textDark,
     fontWeight: theme.fonts.medium,
   },
+  titleContainer: { paddingHorizontal: hp(1) },
+  title: {
+    fontSize: hp(1.8),
+    color: theme.colors.textDark,
+    fontWeight: theme.fonts.medium,
+  },
   postTime: {
     fontSize: hp(1.4),
     color: theme.colors.textLight,
@@ -73,24 +79,58 @@ export const styles = StyleSheet.create({
   postBody: {
     marginLeft: 5,
   },
-  footer: {
-    flexDirection: "row",
+  // result styles
+  resultContainer: {
+    flex: 1,
     alignItems: "center",
-    gap: 15,
+    justifyContent: "center",
   },
-  footerButton: {
-    marginLeft: 5,
-    flexDirection: "row",
+  resultColumnContainer: {
+    paddingHorizontal: hp(4),
+    flex: 1,
     alignItems: "center",
-    gap: 4,
+    justifyContent: "center",
+    marginBottom: hp(2.5),
   },
-  actions: {
+  resultRowContainer: {
     flexDirection: "row",
+    justifyContent: "space-between",
+    width: "100%",
+  },
+  resultTitle: {
+    fontSize: hp(2.4),
+    marginBottom: hp(2.5),
+    color: theme.colors.textDark,
+    fontWeight: theme.fonts.bold,
+  },
+  circlestyle: {
+    elevation: 2,
+    overflow: "hidden",
+  },
+  textStyle: {
+    fontSize: hp(3.6),
+    fontFamily: "Poppins-Bold",
+    fontWeight: "bold",
+  },
+  resultImage: {
+    width: wp(70),
+    height: hp(40),
+    borderRadius: theme.radius.xl,
+  },
+  resultTextContainer: {
+    justifyContent: "flex-start",
+    gap: 10,
+  },
+  resultText: {
+    fontSize: hp(2),
+    color: theme.colors.textDark,
+    fontWeight: theme.fonts.medium,
+  },
+  resultLastColumnContainer: {
+    paddingHorizontal: hp(4),
+    flex: 1,
     alignItems: "center",
-    gap: 18,
+    justifyContent: "center",
   },
-  count: {
-    color: theme.colors.text,
-    fontSize: hp(1.8),
-  },
+  /////////////////////////
 });

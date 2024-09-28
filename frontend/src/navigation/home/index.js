@@ -12,6 +12,7 @@ import HomeScreen from "../../screens/home";
 import ProfileScreen from "../../screens/profile";
 import HistoryScreen from "../../screens/history";
 import SelectScreen from "../../screens/cameraSelect";
+import ResultScreen from "../../screens/result";
 
 const Tab = createMaterialBottomTabNavigator();
 
@@ -55,13 +56,13 @@ export default function MainScreen() {
           tabBarIcon: ({ color }) => <TennisIcon color={color} />,
         }}
       />
-      {/* <Tab.Screen
-        name="Relax"
-        component={RelaxDetailScreen}
+      <Tab.Screen
+        name="Result"
+        component={ResultScreen}
         options={{
           tabBarIcon: ({ color }) => <TennisIcon color={color} />,
         }}
-      /> */}
+      />
 
       <Tab.Screen
         name="Me"

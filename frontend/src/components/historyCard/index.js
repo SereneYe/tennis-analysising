@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, Alert } from "react-native";
+import { View, Text, TouchableOpacity, Alert, Image } from "react-native";
 import React from "react";
 import { theme } from "../../constants/theme";
 import { hp, wp } from "../../constants/common";
@@ -6,6 +6,7 @@ import RenderHtml from "react-native-render-html";
 import { Video } from "expo-av";
 import Avatar from "../avartar/index";
 import { styles, tagsStyles, shadowStyles } from "./styles";
+import * as Progress from "react-native-progress";
 import { ThreeDotIcon, TrashIcon } from "../icons/icons";
 
 const HistoryCard = ({
@@ -15,6 +16,7 @@ const HistoryCard = ({
   showMoreIcon = true,
   hasShadow = true,
   showDelete = false,
+  showResult = false,
   onDelete = () => {},
 }) => {
   const htmlBody = { html: item?.body };
@@ -96,13 +98,88 @@ const HistoryCard = ({
             />
           )}
         </View>
-        <Text style={styles.username}>
-          {item.title ? item.title : "Uploaded Yesterday"}
-        </Text>
 
+        {!showResult && (
+          <View style={styles.titleContainer}>
+            <Text style={styles.title}>
+              {item.title ? item.title : "Uploaded Yesterday"}
+            </Text>
+          </View>
+        )}
+        {/* *******************Add for Result detail******************** */}
+        {showResult && (
+          <View style={styles.resultContainer}>
+            <View style={styles.resultColumnContainer}>
+              <Text style={styles.resultTitle}>⭐️ Your Total Score ⭐️</Text>
+              <View style={{ alignSelf: "center" }}>
+                <Progress.Circle
+                  size={120}
+                  showsText={true}
+                  progress={82 / 100}
+                  formatText={() => 82}
+                  unfilledColor="#ededed"
+                  borderColor="#ededed"
+                  color={theme.colors.primary}
+                  direction="clockwise"
+                  strokeCap="round"
+                  thickness={12}
+                  style={styles.circlestyle}
+                  textStyle={styles.textStyle}
+                />
+              </View>
+            </View>
+            <View style={styles.resultColumnContainer}>
+              <Text style={styles.resultTitle}>🎾 Practice Type: Backhand</Text>
+              <View style={styles.resultRowContainer}>
+                <Text style={styles.resultTitle}>🎯 Turns: 5</Text>
+                <Text style={styles.resultTitle}>✅ Correct: 4</Text>
+              </View>
+            </View>
+
+            <View style={styles.resultColumnContainer}>
+              <Text style={styles.resultTitle}>⭐️ Your Image Title ⭐️</Text>
+              <Image
+                source={require("../../images/result1.png")}
+                style={styles.resultImage}
+              />
+            </View>
+            <View style={styles.resultColumnContainer}>
+              <Text style={styles.resultTitle}>⭐️ Your Image Title 2 ⭐️</Text>
+              <Image
+                source={require("../../images/result2.png")}
+                style={styles.resultImage}
+              />
+            </View>
+
+            <View style={styles.resultColumnContainer}>
+              <Text style={styles.resultTitle}>⭐️ Your Instruction ⭐️</Text>
+              <View style={styles.resultTextContainer}>
+                <Text style={styles.resultText}>
+                  👉 Fake instruction Fakytjrdfhgcne instruction Fake
+                  instruction Fake instructiondghnb Fake
+                </Text>
+                <Text style={styles.resultText}>
+                  👉 Fake instrucfghjmntion Fake instruction Famnvbgvhbcmnke
+                  instruction Fake instruction Fakytjrdfhgcne
+                </Text>
+                <Text style={styles.resultText}>
+                  👉 Fake instrucfghjmntion Fake instruction Famnvbgvhbcmnke
+                  instruction Fake instruction Fakytjrdfhgcne
+                </Text>
+              </View>
+            </View>
+
+            <View style={styles.resultLastColumnContainer}>
+              <Text style={styles.resultTitle}>⭐️ Your Video ⭐️</Text>
+            </View>
+          </View>
+        )}
         {/* post video */}
         <Video
-          style={[styles.postMedia, { height: hp(30) }]}
+          style={[
+            styles.postMedia,
+            { height: hp(40), width: wp(70), alignSelf: "center" },
+          ]}
           source={{ uri: item.url }}
           useNativeControls
           resizeMode="cover"

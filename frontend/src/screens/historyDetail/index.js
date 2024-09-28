@@ -108,6 +108,7 @@ const HistoryDetailScreen = () => {
           hasShadow={false}
           showMoreIcon={false}
           showDelete={true}
+          showResult={true}
           onDelete={onDeleteDetail}
         />
       </ScrollView>

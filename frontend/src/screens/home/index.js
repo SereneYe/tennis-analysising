@@ -87,7 +87,7 @@ const HomeScreen = () => {
             unfilledColor="#ededed"
             borderColor="#ededed"
             color={data.darkColor}
-            direction="counter-clockwise"
+            direction="clockwise"
             strokeCap="round"
             thickness={7}
             style={styles.circlestyle}
