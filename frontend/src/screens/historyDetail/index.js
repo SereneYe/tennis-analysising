@@ -46,14 +46,24 @@ const HistoryDetailScreen = () => {
 
   if (!item && !startLoading) {
     return (
-      <View
-        style={[
-          styles.center,
-          { justifyContent: "flex-start", marginTop: 100 },
-        ]}
-      >
-        <Text style={styles.notFound}>Post not found !</Text>
-      </View>
+      <>
+        <View>
+          <Pressable
+            onPress={() => navigation.goBack()}
+            style={styles.backButton}
+          >
+            <CrossIcon strokeWidth={2.5} color={theme.colors.text} />
+          </Pressable>
+        </View>
+        <View
+          style={[
+            styles.center,
+            { justifyContent: "flex-start", marginTop: 100 },
+          ]}
+        >
+          <Text style={styles.notFound}>Post not found !</Text>
+        </View>
+      </>
     );
   }
 

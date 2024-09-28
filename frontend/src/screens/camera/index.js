@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Feather from "react-native-vector-icons/Feather";
 import { View, Text, TouchableOpacity, Image, Pressable } from "react-native";
 import {
@@ -11,7 +11,6 @@ import { useDispatch } from "react-redux";
 import { useIsFocused } from "@react-navigation/native";
 import * as ImagePicker from "expo-image-picker";
 import * as MediaLibrary from "expo-media-library";
-import Analysising from "../analysising";
 import { createPost } from "../../redux/actions";
 import CircularProgress from "react-native-circular-progress-indicator";
 import CountdownBar from "react-native-countdown-bar";
@@ -19,6 +18,7 @@ import { GalleryIcon, ArrowLeftIcon } from "../../components/icons/icons";
 import Button from "../../components/button";
 import uuid from "uuid-random";
 import RelaxDetailScreen from "../relaxDetails";
+import { Audio } from "expo-av";
 
 export default function CameraScreen({ route, navigation }) {
   const [facing, setFacing] = useState("back");
@@ -36,6 +36,18 @@ export default function CameraScreen({ route, navigation }) {
   const dispatch = useDispatch();
   const [showProgress, setShowProgress] = useState(false);
   const { practiceType, turnPreference } = route.params;
+  const [sound, setSound] = useState();
+  const sounds = [
+    require("../../assets/voice/1.mp3"),
+    require("../../assets/voice/2.mp3"),
+    require("../../assets/voice/3.mp3"),
+    require("../../assets/voice/4.mp3"),
+    require("../../assets/voice/5.mp3"),
+    require("../../assets/voice/6.mp3"),
+    require("../../assets/voice/7.mp3"),
+    require("../../assets/voice/8.mp3"),
+    require("../../assets/voice/9.mp3"),
+  ];
 
   if (!cameraPermission || !audioPermission || !mediaLibraryPermission) {
     return <View />;
@@ -92,6 +104,15 @@ export default function CameraScreen({ route, navigation }) {
       console.log("Turns:", i);
       setShowProgress(true);
       console.log("Waiting for 5 seconds...");
+
+      if (i === 0) {
+        playBeginSound();
+      } else if (i === turnPreference - 1) {
+        playLastSound();
+      } else {
+        playSound();
+      }
+
       await new Promise((resolve) => setTimeout(resolve, 5000));
       setShowProgress(false);
       const videoAddr = await recordVideo();
@@ -166,6 +187,43 @@ export default function CameraScreen({ route, navigation }) {
       console.error("Error saving video to library:", error.message);
     }
   };
+
+  async function playSound() {
+    console.log("Loading Sound");
+    let randomNumber = Math.floor(Math.random() * 9);
+    const { sound } = await Audio.Sound.createAsync(sounds[randomNumber]);
+    setSound(sound);
+    await sound.playAsync();
+  }
+
+  async function playBeginSound() {
+    console.log("Loading Sound");
+    const { sound } = await Audio.Sound.createAsync(
+      require("../../assets/voice/b.mp3")
+    );
+
+    setSound(sound);
+    await sound.playAsync();
+  }
+
+  async function playLastSound() {
+    console.log("Loading Sound");
+
+    const { sound } = await Audio.Sound.createAsync(
+      require("../../assets/voice/l.mp3")
+    );
+    setSound(sound);
+    await sound.playAsync();
+  }
+
+  // useEffect(() => {
+  //   return sound
+  //     ? () => {
+  //         console.log("Unloading Sound");
+  //         sound.unloadAsync();
+  //       }
+  //     : undefined;
+  // }, [sound]);
 
   if (finishedRecording) {
     return <RelaxDetailScreen />;

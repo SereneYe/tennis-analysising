@@ -51,8 +51,8 @@ export const fetchCurrentPost = async () => {
     const q = query(
       rawVideoCollection,
       where("user_id", "==", userId),
-      orderBy("create_at", "desc")
-      // limit(1)
+      orderBy("create_at", "desc"),
+      limit(1)
     );
     const querySnapshot = await getDocs(q);
     // Process the results
