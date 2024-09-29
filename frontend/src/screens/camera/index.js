@@ -103,7 +103,7 @@ export default function CameraScreen({ route, navigation }) {
     for (let i = 0; i < turnPreference; i++) {
       console.log("Turns:", i);
       setShowProgress(true);
-      console.log("Waiting for 5 seconds...");
+      console.log("Waiting for 3 seconds...");
 
       if (i === 0) {
         playBeginSound();
@@ -113,7 +113,7 @@ export default function CameraScreen({ route, navigation }) {
         playSound();
       }
 
-      await new Promise((resolve) => setTimeout(resolve, 5000));
+      await new Promise((resolve) => setTimeout(resolve, 3000));
       setShowProgress(false);
       const videoAddr = await recordVideo();
       if (videoAddr) {
@@ -279,12 +279,12 @@ export default function CameraScreen({ route, navigation }) {
               <CircularProgress
                 value={0}
                 radius={80}
-                maxValue={5}
-                initialValue={5}
+                maxValue={3}
+                initialValue={3}
                 progressValueColor={"#fff"}
                 activeStrokeWidth={15}
                 inActiveStrokeWidth={15}
-                duration={5000}
+                duration={3000}
               />
             </View>
           ) : null}

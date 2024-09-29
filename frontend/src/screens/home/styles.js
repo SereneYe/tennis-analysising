@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
     borderRadius: 30,
   },
   title: {
-    fontSize: hp(2.6),
+    fontSize: hp(2.4),
     fontWeight: theme.fonts.bold,
     color: "white",
   },
@@ -115,6 +115,12 @@ const styles = StyleSheet.create({
     fontFamily: "Poppins-Bold",
     fontWeight: "bold",
   },
+  practicePressContainer: {
+    flex: 1,
+    flexDirection: "row",
+    justifyContent: "center",
+    paddingHorizontal: 10,
+  },
   cirText: {
     marginTop: hp(1.5),
     fontSize: hp(2),
@@ -126,16 +132,7 @@ const styles = StyleSheet.create({
     fontWeight: theme.fonts.semibold,
     color: theme.colors.primaryDark2,
   },
-  circleView: {
-    backgroundColor: theme.colors.primary,
-    padding: 2,
-    borderRadius: 10,
-  },
-  circleNext: {
-    height: 12,
-    width: 12,
-    resizeMode: "contain",
-  },
+
   videoImage: {
     height: 10,
     width: 10,

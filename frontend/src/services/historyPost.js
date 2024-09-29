@@ -110,3 +110,40 @@ export const deletePostDetails = async (itemId) => {
     return { success: false, error };
   }
 };
+
+export const fetchSummaryDetails = async (summaryId) => {
+  await importFirestoreFunctions();
+
+  //TODO: fetch summary by each of the type name
+  // try {
+  //   const rawVideoCollection = collection(firestore, "raw-video");
+  //   const q = query(rawVideoCollection, where("video_id", "==", itemId));
+  //   const querySnapshot = await getDocs(q);
+
+  //   let post = null;
+  //   querySnapshot.forEach((doc) => {
+  //     post = {
+  //       id: doc.id,
+  //       ...doc.data(),
+  //     };
+  //   });
+
+  //   return { success: true, data: post }; // Return the single post or null
+  // } catch (error) {
+  //   console.error("Error fetching posts: ", error);
+  //   return { success: false, error };
+  // }
+  console.log("fetchSummaryDetails: ", summaryId);
+  return {
+    success: true,
+    data: {
+      type: "Backhand Training",
+      averageScore: 79,
+      practiceTurns: 46,
+      correctTurns: 36,
+      maxScore: 92,
+      practiceTime: 459,
+      pastScore: [65, 87, 54, 77, 86, 78, 91, 92, 83, 87],
+    },
+  };
+};

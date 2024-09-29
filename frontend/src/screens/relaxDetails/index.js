@@ -1,4 +1,10 @@
-import { View, StyleSheet, TouchableOpacity, Text } from "react-native";
+import {
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  Text,
+  ActivityIndicator,
+} from "react-native";
 import React, { useEffect, useRef, useState } from "react";
 import Onboarding from "react-native-onboarding-swiper";
 import LottieView from "lottie-react-native";
@@ -100,6 +106,11 @@ export default function RelaxDetailScreen() {
         The system is analysing 🤖...{"\n"}Why not take this time to do some
         stretching exercises 😃?
       </Text>
+      <ActivityIndicator
+        color="gray"
+        size="large"
+        style={styles.activityIndicator}
+      />
     </View>
   );
 }
@@ -120,5 +131,12 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     textAlign: "center",
     color: "#000",
+  },
+  activityIndicator: {
+    zIndex: 1,
+    position: "absolute",
+    top: hp(82),
+    left: 0,
+    right: 0,
   },
 });

@@ -6,6 +6,7 @@ import {
   ImageBackground,
   ScrollView,
   TouchableOpacity,
+  Pressable,
 } from "react-native";
 import * as Progress from "react-native-progress";
 import styles from "./styles";
@@ -13,6 +14,8 @@ import ScreenWrapper from "../../components/screenWrapper/screenWrapper";
 import { theme } from "../../constants/theme";
 import { getUserInfo } from "../../services/user";
 import { hp } from "../../constants/common";
+import { useNavigation } from "@react-navigation/native";
+import { ArrowLeftIcon, ArrowRightIcon } from "../../components/icons/icons";
 
 const HomeScreen = () => {
   // const [user, setUser] = useState(() => getUserInfo());
@@ -28,15 +31,17 @@ const HomeScreen = () => {
   const forehand = require("../../images/forehand.png");
   const backhand = require("../../images/backhand.png");
   const serve = require("../../images/serve.png");
-  const next = require("../../images/next.png");
   const couple = require("../../images/teachvideo.png");
   const star = require("../../images/Star.png");
   const play = require("../../images/play.png");
   const backteach = require("../../images/backteach.png");
   const serveteach = require("../../images/serveteach.png");
 
+  const navigation = useNavigation();
+
   const data = [
     {
+      id: "forehand",
       name: "Forehand",
       status: 24,
       image: forehand,
@@ -44,6 +49,7 @@ const HomeScreen = () => {
       darkColor: theme.colors.darkYellow,
     },
     {
+      id: "backhand",
       name: "Backhand",
       status: 50,
       image: backhand,
@@ -51,6 +57,7 @@ const HomeScreen = () => {
       darkColor: theme.colors.darkGreen,
     },
     {
+      id: "serve",
       name: "Serve",
       status: 88,
       image: serve,
@@ -59,7 +66,7 @@ const HomeScreen = () => {
     },
   ];
 
-  const Card = ({ data, index }) => {
+  const Card = ({ data, index, navigation }) => {
     return (
       <View
         style={{
@@ -102,10 +109,13 @@ const HomeScreen = () => {
             alignItems: "center",
           }}
         >
-          <Text style={styles.circleText}>{data.name}</Text>
-          <View style={styles.circleView}>
-            <Image source={next} style={styles.circleNext} />
-          </View>
+          <Pressable
+            onPress={() => navigation.push("summary", { summaryId: data.id })}
+            style={styles.practicePressContainer}
+          >
+            <Text style={styles.circleText}>{data.name}</Text>
+            <ArrowRightIcon color={theme.colors.textDark} />
+          </Pressable>
         </View>
       </View>
     );
@@ -169,18 +179,22 @@ const HomeScreen = () => {
         </View>
         <ScrollView style={styles.screen}>
           <ImageBackground style={styles.banner} source={banner}>
-            <View style={{ flex: 1, justifyContent: "center" }}>
-              <Text style={styles.title}>Get Started</Text>
-              <Text style={styles.title}>Just Do It!</Text>
+            <View style={{ flex: 1 }}>
+              <Text style={styles.title}>Serve, Smash & Win!🎾</Text>
+              <Text style={styles.title}>Become a Tennis Pro with Us! ✊</Text>
             </View>
-            <View style={{ flex: 1 }}></View>
           </ImageBackground>
 
           <View style={styles.activitiesContainer}>
             <Text style={styles.activitiesTitle1}>Practices</Text>
             <View style={{ flexDirection: "row" }}>
               {data.map((item, index) => (
-                <Card key={item.name} data={item} index={index} />
+                <Card
+                  key={item.name}
+                  data={item}
+                  index={index}
+                  navigation={navigation}
+                />
               ))}
             </View>
           </View>
