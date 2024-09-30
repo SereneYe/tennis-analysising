@@ -30,6 +30,7 @@ const HistoryScreen = () => {
   useEffect(() => {
     const focusListener = navigation.addListener("focus", () => {
       getPosts();
+      console.log(posts);
     });
 
     return () => {

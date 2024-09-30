@@ -45,9 +45,12 @@ export const fetchCurrentPost = async () => {
   await importFirestoreFunctions();
   try {
     const userId = auth.currentUser.uid;
-    //TODO: fetch current user posts
-    // getCurrentUserRecord(userId);
-
+    // TODO: fetch current user posts
+    const recordResponse = await getCurrentUserRecord(userId);
+    if (recordResponse.success) {
+      return { success: true, data: recordResponse.data.recordList };
+    }
+    //firebase logic
     const rawVideoCollection = collection(firestore, "raw-video");
     const q = query(
       rawVideoCollection,
@@ -75,7 +78,10 @@ export const fetchPostDetails = async (itemId) => {
   await importFirestoreFunctions();
 
   //TODO: fetch posts by record_id
-  // getRecordDetail(recordId);
+  const recordResponse = await getRecordDetail(itemId);
+  if (recordResponse.success) {
+    return { success: true, data: recordResponse.data };
+  }
 
   try {
     const rawVideoCollection = collection(firestore, "raw-video");
@@ -190,14 +196,17 @@ async function getCurrentUserRecord(userId, reject) {
     data: {
       recordList: [
         {
-          recordId: "1234gbrs-db5",
+          id: "12879t34gbrs-db5j",
+          title: "Backhand Practice for 5 turns",
           recordScore: 79,
           recordType: "Backhand",
           recordTurns: 5,
           created_date: "2024-09-29 14:22:33",
+          record_url:
+            "https://firebasestorage.googleapis.com/v0/b/tiktok-clone-32fdc.appspot.com/o/testingTesting123%2FSZuqCYWkHmdeu0RcpYhwBKpQZFV2%2F5e359858-45cb-4b26-b99d-aa3c19cd020a?alt=media&token=695ef2be-b031-46df-8ae2-35752cdd42a0",
           video: [
             {
-              processed_video_id: "13245",
+              processed_video_id: "13s245",
               video_url:
                 "https://firebasestorage.googleapis.com/v0/b/tiktok-clone-32fdc.appspot.com/o/testingTesting123%2FSZuqCYWkHmdeu0RcpYhwBKpQZFV2%2F5e359858-45cb-4b26-b99d-aa3c19cd020a?alt=media&token=695ef2be-b031-46df-8ae2-35752cdd42a0",
               image_url1:
@@ -213,7 +222,7 @@ async function getCurrentUserRecord(userId, reject) {
               instruction3: "zsfd awefds ehatrbdgs ,kghj zdbx fx szfawseff",
             },
             {
-              processed_video_id: "54367",
+              processed_video_id: "5436d7",
               video_url:
                 "https://firebasestorage.googleapis.com/v0/b/tiktok-clone-32fdc.appspot.com/o/testingTesting123%2FSZuqCYWkHmdeu0RcpYhwBKpQZFV2%2Fa939c0ff-75da-411e-91dc-0935297071e2?alt=media&token=b24c6659-7612-4e5e-8acd-13a03f45534f",
               image_url1:
@@ -229,7 +238,7 @@ async function getCurrentUserRecord(userId, reject) {
               instruction3: "zsfd awefds ehatrbdgs ,kghj zdbx fx szfawseff",
             },
             {
-              processed_video_id: "45673",
+              processed_video_id: "4567e3",
               video_url:
                 "https://firebasestorage.googleapis.com/v0/b/tiktok-clone-32fdc.appspot.com/o/testingTesting123%2FSZuqCYWkHmdeu0RcpYhwBKpQZFV2%2Fbfbae445-fa8c-4a89-9957-858e791b9bc2?alt=media&token=ce557a32-ee3a-415a-8b41-ac68d20e69b7",
               image_url1:
@@ -247,14 +256,17 @@ async function getCurrentUserRecord(userId, reject) {
           ],
         },
         {
-          recordId: "dgxfserdgz4gbrs-db5",
+          id: "dgxfserdgz4lkgbrs-db5",
+          title: "Forehand Practice for 10 turns",
           recordScore: 88,
           recordType: "Backhand",
           recordTurns: 3,
           created_date: "2024-09-29 14:22:33",
+          record_url:
+            "https://firebasestorage.googleapis.com/v0/b/tiktok-clone-32fdc.appspot.com/o/testingTesting123%2FSZuqCYWkHmdeu0RcpYhwBKpQZFV2%2F5e359858-45cb-4b26-b99d-aa3c19cd020a?alt=media&token=695ef2be-b031-46df-8ae2-35752cdd42a0",
           video: [
             {
-              processed_video_id: "13245",
+              processed_video_id: "1ui245",
               video_url:
                 "https://firebasestorage.googleapis.com/v0/b/tiktok-clone-32fdc.appspot.com/o/testingTesting123%2FSZuqCYWkHmdeu0RcpYhwBKpQZFV2%2F5e359858-45cb-4b26-b99d-aa3c19cd020a?alt=media&token=695ef2be-b031-46df-8ae2-35752cdd42a0",
               image_url1:
@@ -270,7 +282,7 @@ async function getCurrentUserRecord(userId, reject) {
               instruction3: "zsfd awefds ehatrbdgs ,kghj zdbx fx szfawseff",
             },
             {
-              processed_video_id: "54367",
+              processed_video_id: "54tf367",
               video_url:
                 "https://firebasestorage.googleapis.com/v0/b/tiktok-clone-32fdc.appspot.com/o/testingTesting123%2FSZuqCYWkHmdeu0RcpYhwBKpQZFV2%2Fa939c0ff-75da-411e-91dc-0935297071e2?alt=media&token=b24c6659-7612-4e5e-8acd-13a03f45534f",
               image_url1:
@@ -286,7 +298,7 @@ async function getCurrentUserRecord(userId, reject) {
               instruction3: "zsfd awefds ehatrbdgs ,kghj zdbx fx szfawseff",
             },
             {
-              processed_video_id: "45673",
+              processed_video_id: "45t673",
               video_url:
                 "https://firebasestorage.googleapis.com/v0/b/tiktok-clone-32fdc.appspot.com/o/testingTesting123%2FSZuqCYWkHmdeu0RcpYhwBKpQZFV2%2Fbfbae445-fa8c-4a89-9957-858e791b9bc2?alt=media&token=ce557a32-ee3a-415a-8b41-ac68d20e69b7",
               image_url1:
@@ -304,14 +316,17 @@ async function getCurrentUserRecord(userId, reject) {
           ],
         },
         {
-          recordId: "1234gbrs-db5",
+          id: "1234g678brs-db5",
+          title: "Forhand Practice for 3 turns",
           recordScore: 79,
           recordType: "Backhand",
           recordTurns: 5,
           created_date: "2024-09-29 14:22:33",
+          record_url:
+            "https://firebasestorage.googleapis.com/v0/b/tiktok-clone-32fdc.appspot.com/o/testingTesting123%2FSZuqCYWkHmdeu0RcpYhwBKpQZFV2%2F5e359858-45cb-4b26-b99d-aa3c19cd020a?alt=media&token=695ef2be-b031-46df-8ae2-35752cdd42a0",
           video: [
             {
-              processed_video_id: "13245",
+              processed_video_id: "1386245",
               video_url:
                 "https://firebasestorage.googleapis.com/v0/b/tiktok-clone-32fdc.appspot.com/o/testingTesting123%2FSZuqCYWkHmdeu0RcpYhwBKpQZFV2%2F5e359858-45cb-4b26-b99d-aa3c19cd020a?alt=media&token=695ef2be-b031-46df-8ae2-35752cdd42a0",
               image_url1:
@@ -327,7 +342,7 @@ async function getCurrentUserRecord(userId, reject) {
               instruction3: "zsfd awefds ehatrbdgs ,kghj zdbx fx szfawseff",
             },
             {
-              processed_video_id: "54367",
+              processed_video_id: "54678367",
               video_url:
                 "https://firebasestorage.googleapis.com/v0/b/tiktok-clone-32fdc.appspot.com/o/testingTesting123%2FSZuqCYWkHmdeu0RcpYhwBKpQZFV2%2Fa939c0ff-75da-411e-91dc-0935297071e2?alt=media&token=b24c6659-7612-4e5e-8acd-13a03f45534f",
               image_url1:
@@ -343,7 +358,7 @@ async function getCurrentUserRecord(userId, reject) {
               instruction3: "zsfd awefds ehatrbdgs ,kghj zdbx fx szfawseff",
             },
             {
-              processed_video_id: "45673",
+              processed_video_id: "456jkh73",
               video_url:
                 "https://firebasestorage.googleapis.com/v0/b/tiktok-clone-32fdc.appspot.com/o/testingTesting123%2FSZuqCYWkHmdeu0RcpYhwBKpQZFV2%2Fbfbae445-fa8c-4a89-9957-858e791b9bc2?alt=media&token=ce557a32-ee3a-415a-8b41-ac68d20e69b7",
               image_url1:
@@ -399,6 +414,7 @@ async function getRecordDetail(recordId, reject) {
       recordScore: 79,
       recordType: "Backhand",
       recordTurns: 5,
+      correctTurns: 4,
       created_date: "2024-09-29 14:22:33",
       video: [
         {
