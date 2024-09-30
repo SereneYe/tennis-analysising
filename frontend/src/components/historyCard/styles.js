@@ -112,10 +112,15 @@ export const styles = StyleSheet.create({
     fontFamily: "Poppins-Bold",
     fontWeight: "bold",
   },
+  resultImageContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
   resultImage: {
-    width: wp(70),
-    height: hp(40),
+    width: wp(40),
+    height: hp(30),
     borderRadius: theme.radius.xl,
+    margin: wp(2),
   },
   resultTextContainer: {
     justifyContent: "flex-start",

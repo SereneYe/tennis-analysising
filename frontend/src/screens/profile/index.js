@@ -16,6 +16,7 @@ import Loading from "../../components/loading/index";
 import { Image } from "expo-image";
 import styles from "./styles";
 import {
+  ArrowLeftIcon,
   EditIcon,
   HandIcon,
   LogOutIcon,
@@ -122,6 +123,14 @@ const ProfileScreen = () => {
 const UserHeader = ({ handleLogout, navigation, user }) => {
   return (
     <View style={styles.headerOuterContainer}>
+      <View>
+        <Pressable
+          onPress={() => navigation.goBack()}
+          style={styles.backButton}
+        >
+          <ArrowLeftIcon strokeWidth={2.5} color={theme.colors.text} />
+        </Pressable>
+      </View>
       <View>
         <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
           <LogOutIcon name="logout" size={40} color={theme.colors.rose} />

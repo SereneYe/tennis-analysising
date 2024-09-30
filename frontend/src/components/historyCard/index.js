@@ -138,17 +138,42 @@ const HistoryCard = ({
 
             <View style={styles.resultColumnContainer}>
               <Text style={styles.resultTitle}>⭐️ Your Image Title ⭐️</Text>
-              <Image
-                source={require("../../images/result1.png")}
-                style={styles.resultImage}
-              />
+              <View style={styles.resultImageContainer}>
+                <Image
+                  source={require("../../images/result1.png")}
+                  style={{ ...styles.resultImage }}
+                />
+                <Image
+                  source={require("../../images/result2.png")}
+                  style={{ ...styles.resultImage }}
+                />
+              </View>
             </View>
             <View style={styles.resultColumnContainer}>
               <Text style={styles.resultTitle}>⭐️ Your Image Title 2 ⭐️</Text>
-              <Image
-                source={require("../../images/result2.png")}
-                style={styles.resultImage}
-              />
+              <View style={styles.resultImageContainer}>
+                <Image
+                  source={require("../../images/result2.png")}
+                  style={{ ...styles.resultImage }}
+                />
+                <Image
+                  source={require("../../images/result1.png")}
+                  style={{ ...styles.resultImage }}
+                />
+              </View>
+            </View>
+            <View style={styles.resultColumnContainer}>
+              <Text style={styles.resultTitle}>⭐️ Your Image Title 3 ⭐️</Text>
+              <View style={styles.resultImageContainer}>
+                <Image
+                  source={require("../../images/result2.png")}
+                  style={{ ...styles.resultImage }}
+                />
+                <Image
+                  source={require("../../images/result1.png")}
+                  style={{ ...styles.resultImage }}
+                />
+              </View>
             </View>
 
             <View style={styles.resultColumnContainer}>

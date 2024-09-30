@@ -69,6 +69,13 @@ export default StyleSheet.create({
     color: theme.colors.textLight,
     fontSize: hp(2.0),
   },
+  backButton: {
+    position: "absolute",
+    left: wp(1.5),
+    padding: 4,
+    borderRadius: theme.radius.sm,
+    backgroundColor: "rgba(0,0,0,0.07)",
+  },
   logoutButton: {
     position: "absolute",
     right: wp(1.5),

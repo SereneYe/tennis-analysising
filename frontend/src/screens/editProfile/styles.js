@@ -7,6 +7,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: wp(4),
   },
+
   avatarContainer: {
     height: hp(14),
     width: hp(14),

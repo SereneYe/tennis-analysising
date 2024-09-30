@@ -92,13 +92,13 @@ export const createPost =
                   const description = `Practice type: ${practiceType}, Turn preference: ${turnPreference} ${formattedDate}`;
 
                   let postData = {
-                    round_id: roundId,
+                    record_id: roundId,
                     user_id: auth.currentUser.uid,
                     video_id: storagePostId,
                     url: downloadURL,
                     title: description,
-                    turn_preference: turnPreference,
-                    practice_type: practiceType,
+                    stroke_numbers: turnPreference,
+                    stroke_type: practiceType,
                     description: description,
                     create_at: formattedDate,
                   };
@@ -110,7 +110,8 @@ export const createPost =
                   );
 
                   // TODO: Uncomment this line to send the post data to the backend
-                  // await sendPostData(postData, reject);
+                  await sendPostData(postData, reject);
+                  console.log("Post data sent to backend.");
 
                   resolve();
                 }
@@ -129,7 +130,7 @@ async function sendPostData(postData, reject) {
   console.log("POST request data: ", postData);
   // New POST request
   let response = await fetch(
-    "http://10.89.129.175:5001/add_videos_by_user_id",
+    "http://10.89.129.125:7381/video_process/process_video",
     {
       method: "POST",
       headers: {
