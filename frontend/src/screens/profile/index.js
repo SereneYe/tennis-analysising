@@ -29,6 +29,7 @@ import {
 import { getUserInfo } from "../../services/user";
 import { fetchCurrentPost } from "../../services/historyPost";
 import HistoryCard from "../../components/historyCard";
+import RecordCard from "../../components/recordCard";
 
 const ProfileScreen = () => {
   const [user, setUser] = useState(() => getUserInfo());
@@ -103,7 +104,7 @@ const ProfileScreen = () => {
         contentContainerStyle={styles.listStyle}
         keyExtractor={(item, index) => item.id.toString()}
         renderItem={({ item }) => (
-          <HistoryCard item={item} user={user} navigation={navigation} />
+          <RecordCard item={item} user={user} navigation={navigation} />
         )}
         onEndReached={() => {
           getPosts();

@@ -60,6 +60,7 @@ export const styles = StyleSheet.create({
     paddingHorizontal: hp(4),
     flex: 1,
     alignItems: "center",
+    marginBottom: hp(2.5),
   },
   postMedia: {
     height: hp(40),

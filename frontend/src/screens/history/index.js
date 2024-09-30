@@ -3,7 +3,6 @@ import React, { useCallback, useEffect, useState } from "react";
 import ScreenWrapper from "../../components/screenWrapper/screenWrapper";
 import { theme } from "../../constants/theme";
 import { hp } from "../../constants/common";
-import HistoryCard from "../../components/historyCard";
 import Avatar from "../../components/avartar/index";
 import { styles } from "./styles";
 import { useNavigation } from "@react-navigation/native";
@@ -11,6 +10,7 @@ import { AddIcon } from "../../components/icons/icons";
 import { getUserInfo } from "../../services/user";
 import { fetchCurrentPost } from "../../services/historyPost";
 import Loading from "../../components/loading";
+import RecordCard from "../../components/recordCard/index";
 
 const HistoryScreen = () => {
   const [user, setUser] = useState(() => getUserInfo());
@@ -89,7 +89,7 @@ const HistoryScreen = () => {
           contentContainerStyle={styles.listStyle}
           keyExtractor={(item, index) => item.id.toString()}
           renderItem={({ item }) => (
-            <HistoryCard item={item} user={user} navigation={navigation} />
+            <RecordCard item={item} user={user} navigation={navigation} />
           )}
           onEndReached={() => {
             getPosts();
