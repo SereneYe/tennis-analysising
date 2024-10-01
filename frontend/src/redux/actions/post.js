@@ -40,7 +40,7 @@ initializeFirebase();
 let storageRef;
 
 export const createPost =
-  (video, roundId, turnPreference, practiceType) => async (dispatch) =>
+  (video, roundId, turnPreference, practiceType) => async () =>
     new Promise(async (resolve, reject) => {
       if (!auth.currentUser || !firestore) {
         await importAuthFunctions();
@@ -110,8 +110,12 @@ export const createPost =
                   );
 
                   // TODO: Uncomment this line to send the post data to the backend
-                  await sendPostData(postData, reject);
-                  console.log("Post data sent to backend.");
+                  // await sendPostData(postData, reject)
+                  //   .then(() => console.log("Post data sent to backend."))
+                  //   .catch(() =>
+                  //     console.log("There was an error while sending post data.")
+                  //   )
+                  //   .finally(() => resolve());
 
                   resolve();
                 }
@@ -126,9 +130,6 @@ export const createPost =
     });
 
 async function sendPostData(postData, reject) {
-  console.log("POST request started.");
-  console.log("POST request data: ", postData);
-  // New POST request
   let response = await fetch(
     "http://10.89.129.125:7381/video_process/process_video",
     {
@@ -139,7 +140,6 @@ async function sendPostData(postData, reject) {
       body: JSON.stringify(postData),
     }
   );
-  console.log("POST request finished.");
   if (!response.ok) {
     console.error("POST request failed.", response.status);
     reject();

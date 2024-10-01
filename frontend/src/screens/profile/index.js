@@ -102,7 +102,7 @@ const ProfileScreen = () => {
           />
         }
         contentContainerStyle={styles.listStyle}
-        keyExtractor={(item, index) => item.id.toString()}
+        keyExtractor={(item, index) => item.recordId.toString()}
         renderItem={({ item }) => (
           <RecordCard item={item} user={user} navigation={navigation} />
         )}

@@ -1,1 +1,1 @@
-export const backendURL = "https://deco1800-260933ba.uqcloud.net/";
+export const backendURL = "http://10.89.129.125:7381/";

@@ -8,6 +8,7 @@ import {
   deletePostDetails,
   fetchPostDetails,
   fetchSummaryDetails,
+  addColors,
 } from "../../services/historyPost";
 import { getUserInfo } from "../../services/user";
 import { styles } from "./styles";
@@ -63,7 +64,7 @@ const SummaryScreen = () => {
             { justifyContent: "flex-start", marginTop: 100 },
           ]}
         >
-          <Text style={styles.notFound}>Post not found !</Text>
+          <Text style={styles.notFound}>Summary not found !</Text>
         </View>
       </>
     );

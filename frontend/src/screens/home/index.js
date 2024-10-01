@@ -41,7 +41,7 @@ const HomeScreen = () => {
 
   const data = [
     {
-      id: "forehand",
+      id: "Forehand",
       name: "Forehand",
       status: 24,
       image: forehand,
@@ -49,7 +49,7 @@ const HomeScreen = () => {
       darkColor: theme.colors.darkYellow,
     },
     {
-      id: "backhand",
+      id: "Backhand",
       name: "Backhand",
       status: 50,
       image: backhand,
@@ -57,7 +57,7 @@ const HomeScreen = () => {
       darkColor: theme.colors.darkGreen,
     },
     {
-      id: "serve",
+      id: "Serve",
       name: "Serve",
       status: 88,
       image: serve,

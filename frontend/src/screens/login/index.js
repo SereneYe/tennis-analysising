@@ -52,7 +52,7 @@ const LoginScreen = () => {
     if (error) {
       Alert.alert("Login", error.message);
     } else {
-      await new Promise((resolve) => setTimeout(resolve, 500));
+      await new Promise((resolve) => setTimeout(resolve, 800));
       navigation.navigate("home");
     }
   };

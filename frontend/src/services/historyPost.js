@@ -1,3 +1,5 @@
+import { backendURL } from "../constants/backendURL";
+
 let getAuth,
   auth,
   getFirestore,
@@ -6,9 +8,8 @@ let getAuth,
   getDocs,
   deleteDoc,
   query,
-  where,
-  limit,
-  orderBy;
+  setDoc,
+  where;
 
 const importFirestoreFunctions = async () => {
   const appModule = await import("../../App");
@@ -24,8 +25,6 @@ const importFirestoreFunctions = async () => {
   getDocs = firestoreModule.getDocs;
   query = firestoreModule.query;
   where = firestoreModule.where;
-  orderBy = firestoreModule.orderBy;
-  limit = firestoreModule.limit;
 };
 
 const importAuthFunctions = async () => {
@@ -40,377 +39,401 @@ const initializeFirebase = async () => {
 };
 
 initializeFirebase();
-
+///////////////////////////////////////////
+// fetch Current Record Lists by userId
+///////////////////////////////////////////
 export const fetchCurrentPost = async () => {
   await importFirestoreFunctions();
+  await importAuthFunctions();
   try {
     const userId = auth.currentUser.uid;
     // TODO: fetch current user posts
     const recordResponse = await getCurrentUserRecord(userId);
     if (recordResponse.success) {
-      return { success: true, data: recordResponse.data.recordList };
+      return { success: true, data: recordResponse.message };
     }
-    //firebase logic
-    const rawVideoCollection = collection(firestore, "raw-video");
-    const q = query(
-      rawVideoCollection,
-      where("user_id", "==", userId),
-      orderBy("create_at", "desc"),
-      limit(1)
-    );
+
+    const recordCollection = collection(firestore, "results");
+    const q = query(recordCollection, where("userId", "==", userId));
     const querySnapshot = await getDocs(q);
-    // Process the results
-    const posts = [];
+    const records = [];
     querySnapshot.forEach((doc) => {
-      posts.push({
-        id: doc.id,
+      records.push({
         ...doc.data(),
       });
     });
-    return { success: true, data: posts };
+    return { success: true, data: records };
   } catch (error) {
     console.error("Error fetching posts: ", error);
     return { success: false, error };
   }
 };
-
-export const fetchPostDetails = async (itemId) => {
+///////////////////////////////////////////
+// fetch Current Record Details by recordId
+///////////////////////////////////////////
+export const fetchPostDetails = async (recordId) => {
   await importFirestoreFunctions();
-
   //TODO: fetch posts by record_id
-  const recordResponse = await getRecordDetail(itemId);
+  const recordResponse = await getRecordDetail(recordId);
   if (recordResponse.success) {
+    const recordData = recordResponse.data;
+    console.log("recordData: ", recordData);
+    // await pushRecordToFirestore(recordData);
     return { success: true, data: recordResponse.data };
   }
 
   try {
-    const rawVideoCollection = collection(firestore, "raw-video");
-    const q = query(rawVideoCollection, where("video_id", "==", itemId));
+    const recordCollection = collection(firestore, "results");
+    const q = query(recordCollection, where("recordId", "==", recordId));
     const querySnapshot = await getDocs(q);
 
-    let post = null;
+    let record = null;
     querySnapshot.forEach((doc) => {
-      post = {
-        id: doc.id,
+      record = {
         ...doc.data(),
       };
     });
 
-    return { success: true, data: post }; // Return the single post or null
+    return { success: true, data: record };
   } catch (error) {
     console.error("Error fetching posts: ", error);
     return { success: false, error };
   }
 };
 
+const pushRecordToFirestore = async (recordData) =>
+  new Promise(async (resolve, reject) => {
+    if (!auth.currentUser || !firestore) {
+      await importAuthFunctions();
+      await importFirestoreFunctions();
+    }
+    storageRef = ref(
+      storage,
+      `results/${auth.currentUser.uid}/${recordData.recordId}`
+    );
+    await setDoc(doc(firestore, "results", recordData.recordId), recordData);
+    console.log("Record pushed to Firestore");
+    resolve();
+  }).catch((error) => {
+    console.error("Error fetching video from filesystem", error);
+    reject();
+  });
+
 export const deletePostDetails = async (itemId) => {
   await importFirestoreFunctions();
   console.log("deletePostDetails: ", itemId);
-
   try {
-    const rawVideoCollection = collection(firestore, "raw-video");
+    const rawVideoCollection = collection(firestore, "results");
     const docRef = doc(rawVideoCollection, itemId);
-
     await deleteDoc(docRef);
-
     return { success: true };
   } catch (error) {
     console.error("Error deleting posts: ", error);
     return { success: false, error };
   }
 };
+///////////////////////////////////////////
+// fetch Current Summary Details by userId and practice type
+///////////////////////////////////////////
+export const fetchSummaryDetails = async (summaryType) => {
+  await importFirestoreFunctions();
+  await importAuthFunctions();
+  try {
+    const userId = auth.currentUser.uid;
+    const recordResponse = await getSummaryByType(userId, summaryType);
 
-export const fetchSummaryDetails = async (summaryId) => {
-  //TODO: fetch summary by each of the type name
-  // try {
-  //   const rawVideoCollection = collection(firestore, "raw-video");
-  //   const q = query(rawVideoCollection, where("video_id", "==", itemId));
-  //   const querySnapshot = await getDocs(q);
+    if (recordResponse.success) {
+      addColors(recordResponse.message);
+      pushSummaryToFirestore(recordResponse.message);
+      return { success: true, data: recordResponse.message };
+    }
+    const recordCollection = collection(firestore, "summaries");
+    console.log(summaryType);
+    const q = query(recordCollection, where("type", "==", summaryType));
+    const querySnapshot = await getDocs(q);
 
-  //   let post = null;
-  //   querySnapshot.forEach((doc) => {
-  //     post = {
-  //       id: doc.id,
-  //       ...doc.data(),
-  //     };
-  //   });
+    let summary = {};
+    querySnapshot.forEach((doc) => {
+      summary = {
+        ...doc.data(),
+      };
+    });
 
-  //   return { success: true, data: post }; // Return the single post or null
-  // } catch (error) {
-  //   console.error("Error fetching posts: ", error);
-  //   return { success: false, error };
-  // }
-
-  console.log("fetchSummaryDetails: ", summaryId);
-  return {
-    success: true,
-    data: {
-      type: "Backhand",
-      averageScore: 79,
-      practiceTurns: 46,
-      totalTime: 459,
-      progress: 0.76,
-      maxScore: 84,
-      practiceTime: 459,
-      performanceDetail: { excellent: 47, good: 40, fair: 16, poor: 3 },
-      pastScore: [65, 87, 54, 77, 86, 78, 91, 92, 83, 87],
-      summary1: "zsdjf dAWD AWDH zdsfgzdbf szfSDEE szbfddytj sdfbdsfb erfra",
-      summary2:
-        "adsgf zdfbvc vdsfz dfvzac gsdfvz dgfvbcx vfdrr zdfbxcva gxbdfv",
-    },
-  };
+    return { success: true, data: summary };
+  } catch (error) {
+    console.error("Error fetching summary: ", error);
+    return { success: false, error };
+  }
 };
+
+const pushSummaryToFirestore = async (summaryData) =>
+  new Promise(async (resolve, reject) => {
+    if (!auth.currentUser || !firestore) {
+      await importAuthFunctions();
+      await importFirestoreFunctions();
+    }
+
+    await setDoc(
+      doc(
+        firestore,
+        "summaries",
+        `${auth.currentUser.uid}&${summaryData.type}`
+      ),
+      summaryData
+    );
+    console.log("Summary pushed to Firestore");
+    resolve();
+  }).catch((error) => {
+    console.error("Error fetching video from filesystem", error);
+    reject();
+  });
 
 //////////////////////////////////////////////
 // TODO: Mock data for testing
 //////////////////////////////////////////////
-async function getCurrentUserRecord(userId, reject) {
-  // console.log("GET request started.");
-  // try {
-  //   let response = await fetch(
-  //     "http://10.89.129.175:5001/add_videos_by_user_id",
-  //     {
-  //       method: "GET",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //     }
-  //   );
+async function getCurrentUserRecord2(userId) {
+  console.log("GET request started.");
+  try {
+    let response = await fetch(backendURL + "history/get_all_records", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        user_id: userId,
+      }),
+    });
 
-  //   console.log("GET request finished.");
+    console.log("POST request finished.");
+    if (!response.ok) {
+      console.error("POST request failed.", response.status);
+      throw new Error("Request failed with status " + response.status);
+    } else {
+      const data = await response.json();
+      return data;
+    }
+  } catch (error) {
+    console.error("There was an error with fetch!", error);
+    throw error;
+  }
+}
 
-  //   if (!response.ok) {
-  //     console.error("GET request failed.", response.status);
-  //     reject();
-  //   } else {
-  //     const data = await response.json();
-  //     resolve(data);
-  //   }
-  // } catch (error) {
-  //   console.error("There was an error with fetch!", error);
-  //   reject();
-  // }
-
+async function getCurrentUserRecord(userId) {
   return {
     success: true,
-    data: {
-      recordList: [
-        {
-          id: "12879t34gbrs-db5j",
-          title: "Backhand Practice for 5 turns",
-          recordScore: 79,
-          recordType: "Backhand",
-          recordTurns: 5,
-          created_date: "2024-09-29 14:22:33",
-          record_url:
-            "https://firebasestorage.googleapis.com/v0/b/tiktok-clone-32fdc.appspot.com/o/testingTesting123%2FSZuqCYWkHmdeu0RcpYhwBKpQZFV2%2F5e359858-45cb-4b26-b99d-aa3c19cd020a?alt=media&token=695ef2be-b031-46df-8ae2-35752cdd42a0",
-          video: [
-            {
-              processed_video_id: "13s245",
-              video_url:
-                "https://firebasestorage.googleapis.com/v0/b/tiktok-clone-32fdc.appspot.com/o/testingTesting123%2FSZuqCYWkHmdeu0RcpYhwBKpQZFV2%2F5e359858-45cb-4b26-b99d-aa3c19cd020a?alt=media&token=695ef2be-b031-46df-8ae2-35752cdd42a0",
-              image_url1:
-                "https://firebasestorage.googleapis.com/v0/b/tiktok-clone-32fdc.appspot.com/o/testingTesting123%2Fbackhand1.png?alt=media&token=67165203-b468-4d31-b934-66113488aa75",
-              image_url2:
-                "https://firebasestorage.googleapis.com/v0/b/tiktok-clone-32fdc.appspot.com/o/testingTesting123%2Fbackhand2.png?alt=media&token=cee229e3-1472-4908-b056-a7b476df07ea",
-              image_url3:
-                "https://firebasestorage.googleapis.com/v0/b/tiktok-clone-32fdc.appspot.com/o/testingTesting123%2Fbackhand3.png?alt=media&token=69c19243-ddd4-4f8a-8059-2c842586ec40",
-              instruction1:
-                "hadsl ikfzxchj kmdsgzb wddefva abgsetrwd abesfdv sgaai lhf szxk lwqa ",
-              instruction2:
-                "Wjkefnhsa ewa efwafad vf sfsdjk wef adwf afdfawefe",
-              instruction3: "zsfd awefds ehatrbdgs ,kghj zdbx fx szfawseff",
-            },
-            {
-              processed_video_id: "5436d7",
-              video_url:
-                "https://firebasestorage.googleapis.com/v0/b/tiktok-clone-32fdc.appspot.com/o/testingTesting123%2FSZuqCYWkHmdeu0RcpYhwBKpQZFV2%2Fa939c0ff-75da-411e-91dc-0935297071e2?alt=media&token=b24c6659-7612-4e5e-8acd-13a03f45534f",
-              image_url1:
-                "https://firebasestorage.googleapis.com/v0/b/tiktok-clone-32fdc.appspot.com/o/testingTesting123%2Fbackhand1.png?alt=media&token=67165203-b468-4d31-b934-66113488aa75",
-              image_url2:
-                "https://firebasestorage.googleapis.com/v0/b/tiktok-clone-32fdc.appspot.com/o/testingTesting123%2Fbackhand2.png?alt=media&token=cee229e3-1472-4908-b056-a7b476df07ea",
-              image_url3:
-                "https://firebasestorage.googleapis.com/v0/b/tiktok-clone-32fdc.appspot.com/o/testingTesting123%2Fbackhand3.png?alt=media&token=69c19243-ddd4-4f8a-8059-2c842586ec40",
-              instruction1:
-                "hadsl ikfzxchj kmdsgzb wddefva abgsetrwd abesfdv sgaai lhf szxk lwqa ",
-              instruction2:
-                "Wjkefnhsa ewa efwafad vf sfsdjk wef adwf afdfawefe",
-              instruction3: "zsfd awefds ehatrbdgs ,kghj zdbx fx szfawseff",
-            },
-            {
-              processed_video_id: "4567e3",
-              video_url:
-                "https://firebasestorage.googleapis.com/v0/b/tiktok-clone-32fdc.appspot.com/o/testingTesting123%2FSZuqCYWkHmdeu0RcpYhwBKpQZFV2%2Fbfbae445-fa8c-4a89-9957-858e791b9bc2?alt=media&token=ce557a32-ee3a-415a-8b41-ac68d20e69b7",
-              image_url1:
-                "https://firebasestorage.googleapis.com/v0/b/tiktok-clone-32fdc.appspot.com/o/testingTesting123%2Fbackhand1.png?alt=media&token=67165203-b468-4d31-b934-66113488aa75",
-              image_url2:
-                "https://firebasestorage.googleapis.com/v0/b/tiktok-clone-32fdc.appspot.com/o/testingTesting123%2Fbackhand2.png?alt=media&token=cee229e3-1472-4908-b056-a7b476df07ea",
-              image_url3:
-                "https://firebasestorage.googleapis.com/v0/b/tiktok-clone-32fdc.appspot.com/o/testingTesting123%2Fbackhand3.png?alt=media&token=69c19243-ddd4-4f8a-8059-2c842586ec40",
-              instruction1:
-                "hadsl ikfzxchj kmdsgzb wddefva abgsetrwd abesfdv sgaai lhf szxk lwqa ",
-              instruction2:
-                "Wjkefnhsa ewa efwafad vf sfsdjk wef adwf afdfawefe",
-              instruction3: "zsfd awefds ehatrbdgs ,kghj zdbx fx szfawseff",
-            },
-          ],
-        },
-        {
-          id: "dgxfserdgz4lkgbrs-db5",
-          title: "Forehand Practice for 10 turns",
-          recordScore: 88,
-          recordType: "Backhand",
-          recordTurns: 3,
-          created_date: "2024-09-29 14:22:33",
-          record_url:
-            "https://firebasestorage.googleapis.com/v0/b/tiktok-clone-32fdc.appspot.com/o/testingTesting123%2FSZuqCYWkHmdeu0RcpYhwBKpQZFV2%2F5e359858-45cb-4b26-b99d-aa3c19cd020a?alt=media&token=695ef2be-b031-46df-8ae2-35752cdd42a0",
-          video: [
-            {
-              processed_video_id: "1ui245",
-              video_url:
-                "https://firebasestorage.googleapis.com/v0/b/tiktok-clone-32fdc.appspot.com/o/testingTesting123%2FSZuqCYWkHmdeu0RcpYhwBKpQZFV2%2F5e359858-45cb-4b26-b99d-aa3c19cd020a?alt=media&token=695ef2be-b031-46df-8ae2-35752cdd42a0",
-              image_url1:
-                "https://firebasestorage.googleapis.com/v0/b/tiktok-clone-32fdc.appspot.com/o/testingTesting123%2Fbackhand1.png?alt=media&token=67165203-b468-4d31-b934-66113488aa75",
-              image_url2:
-                "https://firebasestorage.googleapis.com/v0/b/tiktok-clone-32fdc.appspot.com/o/testingTesting123%2Fbackhand2.png?alt=media&token=cee229e3-1472-4908-b056-a7b476df07ea",
-              image_url3:
-                "https://firebasestorage.googleapis.com/v0/b/tiktok-clone-32fdc.appspot.com/o/testingTesting123%2Fbackhand3.png?alt=media&token=69c19243-ddd4-4f8a-8059-2c842586ec40",
-              instruction1:
-                "hadsl ikfzxchj kmdsgzb wddefva abgsetrwd abesfdv sgaai lhf szxk lwqa ",
-              instruction2:
-                "Wjkefnhsa ewa efwafad vf sfsdjk wef adwf afdfawefe",
-              instruction3: "zsfd awefds ehatrbdgs ,kghj zdbx fx szfawseff",
-            },
-            {
-              processed_video_id: "54tf367",
-              video_url:
-                "https://firebasestorage.googleapis.com/v0/b/tiktok-clone-32fdc.appspot.com/o/testingTesting123%2FSZuqCYWkHmdeu0RcpYhwBKpQZFV2%2Fa939c0ff-75da-411e-91dc-0935297071e2?alt=media&token=b24c6659-7612-4e5e-8acd-13a03f45534f",
-              image_url1:
-                "https://firebasestorage.googleapis.com/v0/b/tiktok-clone-32fdc.appspot.com/o/testingTesting123%2Fbackhand1.png?alt=media&token=67165203-b468-4d31-b934-66113488aa75",
-              image_url2:
-                "https://firebasestorage.googleapis.com/v0/b/tiktok-clone-32fdc.appspot.com/o/testingTesting123%2Fbackhand2.png?alt=media&token=cee229e3-1472-4908-b056-a7b476df07ea",
-              image_url3:
-                "https://firebasestorage.googleapis.com/v0/b/tiktok-clone-32fdc.appspot.com/o/testingTesting123%2Fbackhand3.png?alt=media&token=69c19243-ddd4-4f8a-8059-2c842586ec40",
-              instruction1:
-                "hadsl ikfzxchj kmdsgzb wddefva abgsetrwd abesfdv sgaai lhf szxk lwqa ",
-              instruction2:
-                "Wjkefnhsa ewa efwafad vf sfsdjk wef adwf afdfawefe",
-              instruction3: "zsfd awefds ehatrbdgs ,kghj zdbx fx szfawseff",
-            },
-            {
-              processed_video_id: "45t673",
-              video_url:
-                "https://firebasestorage.googleapis.com/v0/b/tiktok-clone-32fdc.appspot.com/o/testingTesting123%2FSZuqCYWkHmdeu0RcpYhwBKpQZFV2%2Fbfbae445-fa8c-4a89-9957-858e791b9bc2?alt=media&token=ce557a32-ee3a-415a-8b41-ac68d20e69b7",
-              image_url1:
-                "https://firebasestorage.googleapis.com/v0/b/tiktok-clone-32fdc.appspot.com/o/testingTesting123%2Fbackhand1.png?alt=media&token=67165203-b468-4d31-b934-66113488aa75",
-              image_url2:
-                "https://firebasestorage.googleapis.com/v0/b/tiktok-clone-32fdc.appspot.com/o/testingTesting123%2Fbackhand2.png?alt=media&token=cee229e3-1472-4908-b056-a7b476df07ea",
-              image_url3:
-                "https://firebasestorage.googleapis.com/v0/b/tiktok-clone-32fdc.appspot.com/o/testingTesting123%2Fbackhand3.png?alt=media&token=69c19243-ddd4-4f8a-8059-2c842586ec40",
-              instruction1:
-                "hadsl ikfzxchj kmdsgzb wddefva abgsetrwd abesfdv sgaai lhf szxk lwqa ",
-              instruction2:
-                "Wjkefnhsa ewa efwafad vf sfsdjk wef adwf afdfawefe",
-              instruction3: "zsfd awefds ehatrbdgs ,kghj zdbx fx szfawseff",
-            },
-          ],
-        },
-        {
-          id: "1234g678brs-db5",
-          title: "Forhand Practice for 3 turns",
-          recordScore: 79,
-          recordType: "Backhand",
-          recordTurns: 5,
-          created_date: "2024-09-29 14:22:33",
-          record_url:
-            "https://firebasestorage.googleapis.com/v0/b/tiktok-clone-32fdc.appspot.com/o/testingTesting123%2FSZuqCYWkHmdeu0RcpYhwBKpQZFV2%2F5e359858-45cb-4b26-b99d-aa3c19cd020a?alt=media&token=695ef2be-b031-46df-8ae2-35752cdd42a0",
-          video: [
-            {
-              processed_video_id: "1386245",
-              video_url:
-                "https://firebasestorage.googleapis.com/v0/b/tiktok-clone-32fdc.appspot.com/o/testingTesting123%2FSZuqCYWkHmdeu0RcpYhwBKpQZFV2%2F5e359858-45cb-4b26-b99d-aa3c19cd020a?alt=media&token=695ef2be-b031-46df-8ae2-35752cdd42a0",
-              image_url1:
-                "https://firebasestorage.googleapis.com/v0/b/tiktok-clone-32fdc.appspot.com/o/testingTesting123%2Fbackhand1.png?alt=media&token=67165203-b468-4d31-b934-66113488aa75",
-              image_url2:
-                "https://firebasestorage.googleapis.com/v0/b/tiktok-clone-32fdc.appspot.com/o/testingTesting123%2Fbackhand2.png?alt=media&token=cee229e3-1472-4908-b056-a7b476df07ea",
-              image_url3:
-                "https://firebasestorage.googleapis.com/v0/b/tiktok-clone-32fdc.appspot.com/o/testingTesting123%2Fbackhand3.png?alt=media&token=69c19243-ddd4-4f8a-8059-2c842586ec40",
-              instruction1:
-                "hadsl ikfzxchj kmdsgzb wddefva abgsetrwd abesfdv sgaai lhf szxk lwqa ",
-              instruction2:
-                "Wjkefnhsa ewa efwafad vf sfsdjk wef adwf afdfawefe",
-              instruction3: "zsfd awefds ehatrbdgs ,kghj zdbx fx szfawseff",
-            },
-            {
-              processed_video_id: "54678367",
-              video_url:
-                "https://firebasestorage.googleapis.com/v0/b/tiktok-clone-32fdc.appspot.com/o/testingTesting123%2FSZuqCYWkHmdeu0RcpYhwBKpQZFV2%2Fa939c0ff-75da-411e-91dc-0935297071e2?alt=media&token=b24c6659-7612-4e5e-8acd-13a03f45534f",
-              image_url1:
-                "https://firebasestorage.googleapis.com/v0/b/tiktok-clone-32fdc.appspot.com/o/testingTesting123%2Fbackhand1.png?alt=media&token=67165203-b468-4d31-b934-66113488aa75",
-              image_url2:
-                "https://firebasestorage.googleapis.com/v0/b/tiktok-clone-32fdc.appspot.com/o/testingTesting123%2Fbackhand2.png?alt=media&token=cee229e3-1472-4908-b056-a7b476df07ea",
-              image_url3:
-                "https://firebasestorage.googleapis.com/v0/b/tiktok-clone-32fdc.appspot.com/o/testingTesting123%2Fbackhand3.png?alt=media&token=69c19243-ddd4-4f8a-8059-2c842586ec40",
-              instruction1:
-                "hadsl ikfzxchj kmdsgzb wddefva abgsetrwd abesfdv sgaai lhf szxk lwqa ",
-              instruction2:
-                "Wjkefnhsa ewa efwafad vf sfsdjk wef adwf afdfawefe",
-              instruction3: "zsfd awefds ehatrbdgs ,kghj zdbx fx szfawseff",
-            },
-            {
-              processed_video_id: "456jkh73",
-              video_url:
-                "https://firebasestorage.googleapis.com/v0/b/tiktok-clone-32fdc.appspot.com/o/testingTesting123%2FSZuqCYWkHmdeu0RcpYhwBKpQZFV2%2Fbfbae445-fa8c-4a89-9957-858e791b9bc2?alt=media&token=ce557a32-ee3a-415a-8b41-ac68d20e69b7",
-              image_url1:
-                "https://firebasestorage.googleapis.com/v0/b/tiktok-clone-32fdc.appspot.com/o/testingTesting123%2Fbackhand1.png?alt=media&token=67165203-b468-4d31-b934-66113488aa75",
-              image_url2:
-                "https://firebasestorage.googleapis.com/v0/b/tiktok-clone-32fdc.appspot.com/o/testingTesting123%2Fbackhand2.png?alt=media&token=cee229e3-1472-4908-b056-a7b476df07ea",
-              image_url3:
-                "https://firebasestorage.googleapis.com/v0/b/tiktok-clone-32fdc.appspot.com/o/testingTesting123%2Fbackhand3.png?alt=media&token=69c19243-ddd4-4f8a-8059-2c842586ec40",
-              instruction1:
-                "hadsl ikfzxchj kmdsgzb wddefva abgsetrwd abesfdv sgaai lhf szxk lwqa ",
-              instruction2:
-                "Wjkefnhsa ewa efwafad vf sfsdjk wef adwf afdfawefe",
-              instruction3: "zsfd awefds ehatrbdgs ,kghj zdbx fx szfawseff",
-            },
-          ],
-        },
-      ],
-    },
+    message: [
+      {
+        recordId: "1234gefwfebrs-db5",
+        userId: "pMJgk78kGzO6zXlLw1M9bd3Mw9q1",
+
+        title: "Backhand Practice for 5 turns",
+        recordScore: 79,
+        recordType: "Backhand",
+        recordTurns: 5,
+        correctTurns: 4,
+        created_date: "2024-09-29 14:22:33",
+        record_url:
+          "https://firebasestorage.googleapis.com/v0/b/tiktok-clone-32fdc.appspot.com/o/testingTesting123%2FSZuqCYWkHmdeu0RcpYhwBKpQZFV2%2F5e359858-45cb-4b26-b99d-aa3c19cd020a?alt=media&token=695ef2be-b031-46df-8ae2-35752cdd42a0",
+        video: [
+          {
+            processed_video_id: "13s245",
+            video_url:
+              "https://firebasestorage.googleapis.com/v0/b/tiktok-clone-32fdc.appspot.com/o/testingTesting123%2FSZuqCYWkHmdeu0RcpYhwBKpQZFV2%2F5e359858-45cb-4b26-b99d-aa3c19cd020a?alt=media&token=695ef2be-b031-46df-8ae2-35752cdd42a0",
+            image_url1:
+              "https://firebasestorage.googleapis.com/v0/b/tiktok-clone-32fdc.appspot.com/o/testingTesting123%2Fbackhand1.png?alt=media&token=67165203-b468-4d31-b934-66113488aa75",
+            image_url2:
+              "https://firebasestorage.googleapis.com/v0/b/tiktok-clone-32fdc.appspot.com/o/testingTesting123%2Fbackhand2.png?alt=media&token=cee229e3-1472-4908-b056-a7b476df07ea",
+            image_url3:
+              "https://firebasestorage.googleapis.com/v0/b/tiktok-clone-32fdc.appspot.com/o/testingTesting123%2Fbackhand3.png?alt=media&token=69c19243-ddd4-4f8a-8059-2c842586ec40",
+            instruction1:
+              "hadsl ikfzxchj kmdsgzb wddefva abgsetrwd abesfdv sgaai lhf szxk lwqa ",
+            instruction2: "Wjkefnhsa ewa efwafad vf sfsdjk wef adwf afdfawefe",
+            instruction3: "zsfd awefds ehatrbdgs ,kghj zdbx fx szfawseff",
+          },
+          {
+            processed_video_id: "5436d7",
+            video_url:
+              "https://firebasestorage.googleapis.com/v0/b/tiktok-clone-32fdc.appspot.com/o/testingTesting123%2FSZuqCYWkHmdeu0RcpYhwBKpQZFV2%2Fa939c0ff-75da-411e-91dc-0935297071e2?alt=media&token=b24c6659-7612-4e5e-8acd-13a03f45534f",
+            image_url1:
+              "https://firebasestorage.googleapis.com/v0/b/tiktok-clone-32fdc.appspot.com/o/testingTesting123%2Fbackhand1.png?alt=media&token=67165203-b468-4d31-b934-66113488aa75",
+            image_url2:
+              "https://firebasestorage.googleapis.com/v0/b/tiktok-clone-32fdc.appspot.com/o/testingTesting123%2Fbackhand2.png?alt=media&token=cee229e3-1472-4908-b056-a7b476df07ea",
+            image_url3:
+              "https://firebasestorage.googleapis.com/v0/b/tiktok-clone-32fdc.appspot.com/o/testingTesting123%2Fbackhand3.png?alt=media&token=69c19243-ddd4-4f8a-8059-2c842586ec40",
+            instruction1:
+              "hadsl ikfzxchj kmdsgzb wddefva abgsetrwd abesfdv sgaai lhf szxk lwqa ",
+            instruction2: "Wjkefnhsa ewa efwafad vf sfsdjk wef adwf afdfawefe",
+            instruction3: "zsfd awefds ehatrbdgs ,kghj zdbx fx szfawseff",
+          },
+          {
+            processed_video_id: "4567e3",
+            video_url:
+              "https://firebasestorage.googleapis.com/v0/b/tiktok-clone-32fdc.appspot.com/o/testingTesting123%2FSZuqCYWkHmdeu0RcpYhwBKpQZFV2%2Fbfbae445-fa8c-4a89-9957-858e791b9bc2?alt=media&token=ce557a32-ee3a-415a-8b41-ac68d20e69b7",
+            image_url1:
+              "https://firebasestorage.googleapis.com/v0/b/tiktok-clone-32fdc.appspot.com/o/testingTesting123%2Fbackhand1.png?alt=media&token=67165203-b468-4d31-b934-66113488aa75",
+            image_url2:
+              "https://firebasestorage.googleapis.com/v0/b/tiktok-clone-32fdc.appspot.com/o/testingTesting123%2Fbackhand2.png?alt=media&token=cee229e3-1472-4908-b056-a7b476df07ea",
+            image_url3:
+              "https://firebasestorage.googleapis.com/v0/b/tiktok-clone-32fdc.appspot.com/o/testingTesting123%2Fbackhand3.png?alt=media&token=69c19243-ddd4-4f8a-8059-2c842586ec40",
+            instruction1:
+              "hadsl ikfzxchj kmdsgzb wddefva abgsetrwd abesfdv sgaai lhf szxk lwqa ",
+            instruction2: "Wjkefnhsa ewa efwafad vf sfsdjk wef adwf afdfawefe",
+            instruction3: "zsfd awefds ehatrbdgs ,kghj zdbx fx szfawseff",
+          },
+        ],
+      },
+      {
+        recordId: "dgxfdsfserdgz4lkgbrs-db5",
+        title: "Forehand Practice for 10 turns",
+        recordScore: 88,
+        recordType: "Backhand",
+        recordTurns: 3,
+        created_date: "2024-09-29 14:22:33",
+        record_url:
+          "https://firebasestorage.googleapis.com/v0/b/tiktok-clone-32fdc.appspot.com/o/testingTesting123%2FSZuqCYWkHmdeu0RcpYhwBKpQZFV2%2F5e359858-45cb-4b26-b99d-aa3c19cd020a?alt=media&token=695ef2be-b031-46df-8ae2-35752cdd42a0",
+        video: [
+          {
+            processed_video_id: "1ui245",
+            video_url:
+              "https://firebasestorage.googleapis.com/v0/b/tiktok-clone-32fdc.appspot.com/o/testingTesting123%2FSZuqCYWkHmdeu0RcpYhwBKpQZFV2%2F5e359858-45cb-4b26-b99d-aa3c19cd020a?alt=media&token=695ef2be-b031-46df-8ae2-35752cdd42a0",
+            image_url1:
+              "https://firebasestorage.googleapis.com/v0/b/tiktok-clone-32fdc.appspot.com/o/testingTesting123%2Fbackhand1.png?alt=media&token=67165203-b468-4d31-b934-66113488aa75",
+            image_url2:
+              "https://firebasestorage.googleapis.com/v0/b/tiktok-clone-32fdc.appspot.com/o/testingTesting123%2Fbackhand2.png?alt=media&token=cee229e3-1472-4908-b056-a7b476df07ea",
+            image_url3:
+              "https://firebasestorage.googleapis.com/v0/b/tiktok-clone-32fdc.appspot.com/o/testingTesting123%2Fbackhand3.png?alt=media&token=69c19243-ddd4-4f8a-8059-2c842586ec40",
+            instruction1:
+              "hadsl ikfzxchj kmdsgzb wddefva abgsetrwd abesfdv sgaai lhf szxk lwqa ",
+            instruction2: "Wjkefnhsa ewa efwafad vf sfsdjk wef adwf afdfawefe",
+            instruction3: "zsfd awefds ehatrbdgs ,kghj zdbx fx szfawseff",
+          },
+          {
+            processed_video_id: "54tf367",
+            video_url:
+              "https://firebasestorage.googleapis.com/v0/b/tiktok-clone-32fdc.appspot.com/o/testingTesting123%2FSZuqCYWkHmdeu0RcpYhwBKpQZFV2%2Fa939c0ff-75da-411e-91dc-0935297071e2?alt=media&token=b24c6659-7612-4e5e-8acd-13a03f45534f",
+            image_url1:
+              "https://firebasestorage.googleapis.com/v0/b/tiktok-clone-32fdc.appspot.com/o/testingTesting123%2Fbackhand1.png?alt=media&token=67165203-b468-4d31-b934-66113488aa75",
+            image_url2:
+              "https://firebasestorage.googleapis.com/v0/b/tiktok-clone-32fdc.appspot.com/o/testingTesting123%2Fbackhand2.png?alt=media&token=cee229e3-1472-4908-b056-a7b476df07ea",
+            image_url3:
+              "https://firebasestorage.googleapis.com/v0/b/tiktok-clone-32fdc.appspot.com/o/testingTesting123%2Fbackhand3.png?alt=media&token=69c19243-ddd4-4f8a-8059-2c842586ec40",
+            instruction1:
+              "hadsl ikfzxchj kmdsgzb wddefva abgsetrwd abesfdv sgaai lhf szxk lwqa ",
+            instruction2: "Wjkefnhsa ewa efwafad vf sfsdjk wef adwf afdfawefe",
+            instruction3: "zsfd awefds ehatrbdgs ,kghj zdbx fx szfawseff",
+          },
+          {
+            processed_video_id: "45t673",
+            video_url:
+              "https://firebasestorage.googleapis.com/v0/b/tiktok-clone-32fdc.appspot.com/o/testingTesting123%2FSZuqCYWkHmdeu0RcpYhwBKpQZFV2%2Fbfbae445-fa8c-4a89-9957-858e791b9bc2?alt=media&token=ce557a32-ee3a-415a-8b41-ac68d20e69b7",
+            image_url1:
+              "https://firebasestorage.googleapis.com/v0/b/tiktok-clone-32fdc.appspot.com/o/testingTesting123%2Fbackhand1.png?alt=media&token=67165203-b468-4d31-b934-66113488aa75",
+            image_url2:
+              "https://firebasestorage.googleapis.com/v0/b/tiktok-clone-32fdc.appspot.com/o/testingTesting123%2Fbackhand2.png?alt=media&token=cee229e3-1472-4908-b056-a7b476df07ea",
+            image_url3:
+              "https://firebasestorage.googleapis.com/v0/b/tiktok-clone-32fdc.appspot.com/o/testingTesting123%2Fbackhand3.png?alt=media&token=69c19243-ddd4-4f8a-8059-2c842586ec40",
+            instruction1:
+              "hadsl ikfzxchj kmdsgzb wddefva abgsetrwd abesfdv sgaai lhf szxk lwqa ",
+            instruction2: "Wjkefnhsa ewa efwafad vf sfsdjk wef adwf afdfawefe",
+            instruction3: "zsfd awefds ehatrbdgs ,kghj zdbx fx szfawseff",
+          },
+        ],
+      },
+      {
+        recordId: "1234gqwfd678brs-db5",
+        title: "Forhand Practice for 3 turns",
+        recordScore: 79,
+        recordType: "Backhand",
+        recordTurns: 5,
+        created_date: "2024-09-29 14:22:33",
+        record_url:
+          "https://firebasestorage.googleapis.com/v0/b/tiktok-clone-32fdc.appspot.com/o/testingTesting123%2FSZuqCYWkHmdeu0RcpYhwBKpQZFV2%2F5e359858-45cb-4b26-b99d-aa3c19cd020a?alt=media&token=695ef2be-b031-46df-8ae2-35752cdd42a0",
+        video: [
+          {
+            processed_video_id: "1386245",
+            video_url:
+              "https://firebasestorage.googleapis.com/v0/b/tiktok-clone-32fdc.appspot.com/o/testingTesting123%2FSZuqCYWkHmdeu0RcpYhwBKpQZFV2%2F5e359858-45cb-4b26-b99d-aa3c19cd020a?alt=media&token=695ef2be-b031-46df-8ae2-35752cdd42a0",
+            image_url1:
+              "https://firebasestorage.googleapis.com/v0/b/tiktok-clone-32fdc.appspot.com/o/testingTesting123%2Fbackhand1.png?alt=media&token=67165203-b468-4d31-b934-66113488aa75",
+            image_url2:
+              "https://firebasestorage.googleapis.com/v0/b/tiktok-clone-32fdc.appspot.com/o/testingTesting123%2Fbackhand2.png?alt=media&token=cee229e3-1472-4908-b056-a7b476df07ea",
+            image_url3:
+              "https://firebasestorage.googleapis.com/v0/b/tiktok-clone-32fdc.appspot.com/o/testingTesting123%2Fbackhand3.png?alt=media&token=69c19243-ddd4-4f8a-8059-2c842586ec40",
+            instruction1:
+              "hadsl ikfzxchj kmdsgzb wddefva abgsetrwd abesfdv sgaai lhf szxk lwqa ",
+            instruction2: "Wjkefnhsa ewa efwafad vf sfsdjk wef adwf afdfawefe",
+            instruction3: "zsfd awefds ehatrbdgs ,kghj zdbx fx szfawseff",
+          },
+          {
+            processed_video_id: "54678367",
+            video_url:
+              "https://firebasestorage.googleapis.com/v0/b/tiktok-clone-32fdc.appspot.com/o/testingTesting123%2FSZuqCYWkHmdeu0RcpYhwBKpQZFV2%2Fa939c0ff-75da-411e-91dc-0935297071e2?alt=media&token=b24c6659-7612-4e5e-8acd-13a03f45534f",
+            image_url1:
+              "https://firebasestorage.googleapis.com/v0/b/tiktok-clone-32fdc.appspot.com/o/testingTesting123%2Fbackhand1.png?alt=media&token=67165203-b468-4d31-b934-66113488aa75",
+            image_url2:
+              "https://firebasestorage.googleapis.com/v0/b/tiktok-clone-32fdc.appspot.com/o/testingTesting123%2Fbackhand2.png?alt=media&token=cee229e3-1472-4908-b056-a7b476df07ea",
+            image_url3:
+              "https://firebasestorage.googleapis.com/v0/b/tiktok-clone-32fdc.appspot.com/o/testingTesting123%2Fbackhand3.png?alt=media&token=69c19243-ddd4-4f8a-8059-2c842586ec40",
+            instruction1:
+              "hadsl ikfzxchj kmdsgzb wddefva abgsetrwd abesfdv sgaai lhf szxk lwqa ",
+            instruction2: "Wjkefnhsa ewa efwafad vf sfsdjk wef adwf afdfawefe",
+            instruction3: "zsfd awefds ehatrbdgs ,kghj zdbx fx szfawseff",
+          },
+          {
+            processed_video_id: "456jkh73",
+            video_url:
+              "https://firebasestorage.googleapis.com/v0/b/tiktok-clone-32fdc.appspot.com/o/testingTesting123%2FSZuqCYWkHmdeu0RcpYhwBKpQZFV2%2Fbfbae445-fa8c-4a89-9957-858e791b9bc2?alt=media&token=ce557a32-ee3a-415a-8b41-ac68d20e69b7",
+            image_url1:
+              "https://firebasestorage.googleapis.com/v0/b/tiktok-clone-32fdc.appspot.com/o/testingTesting123%2Fbackhand1.png?alt=media&token=67165203-b468-4d31-b934-66113488aa75",
+            image_url2:
+              "https://firebasestorage.googleapis.com/v0/b/tiktok-clone-32fdc.appspot.com/o/testingTesting123%2Fbackhand2.png?alt=media&token=cee229e3-1472-4908-b056-a7b476df07ea",
+            image_url3:
+              "https://firebasestorage.googleapis.com/v0/b/tiktok-clone-32fdc.appspot.com/o/testingTesting123%2Fbackhand3.png?alt=media&token=69c19243-ddd4-4f8a-8059-2c842586ec40",
+            instruction1:
+              "hadsl ikfzxchj kmdsgzb wddefva abgsetrwd abesfdv sgaai lhf szxk lwqa ",
+            instruction2: "Wjkefnhsa ewa efwafad vf sfsdjk wef adwf afdfawefe",
+            instruction3: "zsfd awefds ehatrbdgs ,kghj zdbx fx szfawseff",
+          },
+        ],
+      },
+    ],
   };
 }
 
-async function getRecordDetail(recordId, reject) {
-  // console.log("GET request started.");
-  // try {
-  //   let response = await fetch(
-  //     "http://10.89.129.175:5001/add_videos_by_user_id",
-  //     {
-  //       method: "GET",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //     }
-  //   );
+async function getRecordDetail2(recordId) {
+  console.log("GET request started.");
+  try {
+    let response = await fetch(backendURL + "history/get_all_records", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        user_id: userId,
+      }),
+    });
 
-  //   console.log("GET request finished.");
+    console.log("POST request finished.");
+    if (!response.ok) {
+      console.error("POST request failed.", response.status);
+      throw new Error("Request failed with status " + response.status);
+    } else {
+      const data = await response.json();
+      return data;
+    }
+  } catch (error) {
+    console.error("There was an error with fetch!", error);
+    throw error;
+  }
+}
 
-  //   if (!response.ok) {
-  //     console.error("GET request failed.", response.status);
-  //     reject();
-  //   } else {
-  //     const data = await response.json();
-  //     resolve(data);
-  //   }
-  // } catch (error) {
-  //   console.error("There was an error with fetch!", error);
-  //   reject();
-  // }
-
+async function getRecordDetail(recordId) {
   return {
     success: true,
     data: {
-      recordId: "1234gbrs-db5",
+      recordId: "1234gefwfebrs-db5",
+      userId: "pMJgk78kGzO6zXlLw1M9bd3Mw9q1",
+      title: "Backhand Practice for 5 turns",
       recordScore: 79,
       recordType: "Backhand",
       recordTurns: 5,
@@ -468,32 +491,63 @@ async function getRecordDetail(recordId, reject) {
 }
 
 async function deleteRecordDetail(recordId) {
-  // try {
-  //   let response = await fetch(
-  //     "http://10.89.129.175:5001/add_videos_by_user_id",
-  //     {
-  //       method: "GET",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //     }
-  //   );
-
-  //   console.log("GET request finished.");
-
-  //   if (!response.ok) {
-  //     console.error("GET request failed.", response.status);
-  //     reject();
-  //   } else {
-  //     const data = await response.json();
-  //     resolve(data);
-  //   }
-  // } catch (error) {
-  //   console.error("There was an error with fetch!", error);
-  //   reject();
-  // }
-
   return {
     success: true,
   };
+}
+
+async function getSummaryByType(userId, summaryType) {
+  return { success: false, error: "No data found" };
+  return {
+    success: true,
+    message: {
+      type: "Forehand",
+      userId: "pMJgk78kGzO6zXlLw1M9bd3Mw9q1",
+      averageScore: 82,
+      practiceTurns: 45,
+      totalTime: 434,
+      progress: 0.45,
+      maxScore: 88,
+      practiceTime: 489,
+      performanceDetail: { excellent: 35, good: 25, fair: 25, poor: 15 },
+      pastScore: [65, 77, 69, 71, 82, 88, 89, 90, 84, 87, 88, 79, 82, 79, 91],
+      summary1: "zsdjf dAWD AWDH zdsfgzdbf szfSDEE szbfddytj sdfbdsfb erfra",
+      summary2:
+        "adsgf zdfbvc vdsfz dfvzac gsdfvz dgfvbcx vfdrr zdfbxcva gxbdfv",
+      summary3:
+        "adsgf zdfbvc vdsfz dfvzac gsdfvz dgfvbcx vfdrr zdfbxcva gxbdfv",
+    },
+  };
+}
+
+////////////////////////////////
+// Helper function to add color here
+////////////////////////////////
+function addColors(item) {
+  var colorSets = {
+    Backhand: {
+      primary: "#6A994E",
+      primaryDark: "#386641",
+      primaryLight: "#BACD92",
+      highlight1: "#FFF5CD",
+      highlight2: "#F29C6E",
+    },
+    Forehand: {
+      primary: "#EC8F5E",
+      primaryDark: "#bd724b",
+      primaryLight: "#F3B664",
+      highlight1: "#F1EB90",
+      highlight2: "#9FBB73",
+    },
+    Serve: {
+      primary: "#219EBC",
+      primaryDark: "#176f84",
+      primaryLight: "#7ac5d7",
+      highlight1: "#FFF5B8",
+      highlight2: "#E7CEA6",
+    },
+  };
+
+  item.colors = colorSets[item.type];
+  return item;
 }

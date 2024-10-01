@@ -4,17 +4,23 @@ import { PieChart } from "react-native-gifted-charts";
 import { theme } from "../../constants/theme";
 import { hp, wp } from "../../constants/common";
 
-const PieChartComponent = () => {
+const PieChartComponent = ({ item }) => {
   const pieData = [
     {
-      value: 47,
-      color: "#6A994E",
-      gradientCenterColor: "#386641",
+      value: item.performanceDetail.excellent,
+      color: item.colors.primary,
+      gradientCenterColor: item.colors.primaryDark,
       focused: true,
     },
-    { value: 40, color: "#BACD92", gradientCenterColor: "#BACD92" },
-    { value: 16, color: "#FFF5CD", gradientCenterColor: "#FFF5CD" },
-    { value: 3, color: "#F29C6E", gradientCenterColor: "#F29C6E" },
+    {
+      value: item.performanceDetail.good,
+      color: item.colors.primaryLight,
+    },
+    {
+      value: item.performanceDetail.fair,
+      color: item.colors.highlight1,
+    },
+    { value: item.performanceDetail.poor, color: item.colors.highlight2 },
   ];
 
   const renderDot = (color) => {
@@ -50,14 +56,18 @@ const PieChartComponent = () => {
               marginRight: 20,
             }}
           >
-            {renderDot("#6A994E")}
-            <Text style={{ color: theme.colors.textDark }}>Excellent: 47%</Text>
+            {renderDot(item.colors.primary)}
+            <Text style={{ color: theme.colors.textDark }}>
+              Excellent: {item.performanceDetail.excellent}%
+            </Text>
           </View>
           <View
             style={{ flexDirection: "row", alignItems: "center", width: 120 }}
           >
-            {renderDot("#FFF5CD")}
-            <Text style={{ color: theme.colors.textDark }}>Okay: 16%</Text>
+            {renderDot(item.colors.highlight1)}
+            <Text style={{ color: theme.colors.textDark }}>
+              Okay: {item.performanceDetail.fair}%
+            </Text>
           </View>
         </View>
         <View
@@ -75,14 +85,18 @@ const PieChartComponent = () => {
               marginRight: 20,
             }}
           >
-            {renderDot("#BACD92")}
-            <Text style={{ color: theme.colors.textDark }}>Good: 40%</Text>
+            {renderDot(item.colors.primaryLight)}
+            <Text style={{ color: theme.colors.textDark }}>
+              Good: {item.performanceDetail.good}%
+            </Text>
           </View>
           <View
             style={{ flexDirection: "row", alignItems: "center", width: 120 }}
           >
-            {renderDot("#F29C6E")}
-            <Text style={{ color: theme.colors.textDark }}>Poor: 3%</Text>
+            {renderDot(item.colors.highlight2)}
+            <Text style={{ color: theme.colors.textDark }}>
+              Poor: {item.performanceDetail.poor}%
+            </Text>
           </View>
         </View>
       </>
@@ -113,7 +127,7 @@ const PieChartComponent = () => {
                     fontWeight: "bold",
                   }}
                 >
-                  47%
+                  {item.performanceDetail.excellent}%
                 </Text>
                 <Text style={{ fontSize: 18, color: theme.colors.textDark }}>
                   Excellent

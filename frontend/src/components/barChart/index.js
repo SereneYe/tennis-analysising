@@ -4,37 +4,37 @@ import { BarChart } from "react-native-gifted-charts";
 import { theme } from "../../constants/theme";
 import { hp, wp } from "../../constants/common";
 
-const BarChartComponent = () => {
+const BarChartComponent = ({ item }) => {
   const data = [
     {
       value: 25,
-      frontColor: "#6A994E",
+      frontColor: item.colors.primary,
       spacing: 6,
       label: "W1",
     },
-    { value: 24, frontColor: "#BACD92" },
+    { value: 24, frontColor: item.colors.primaryLight },
 
     {
       value: 35,
-      frontColor: "#6A994E",
+      frontColor: item.colors.primary,
       spacing: 6,
       label: "W2",
     },
-    { value: 30, frontColor: "#BACD92" },
+    { value: 30, frontColor: item.colors.primaryLight },
     {
       value: 42,
-      frontColor: "#6A994E",
+      frontColor: item.colors.primary,
       spacing: 6,
       label: "W3",
     },
-    { value: 37, frontColor: "#BACD92" },
+    { value: 37, frontColor: item.colors.primaryLight },
     {
       value: 38,
-      frontColor: "#6A994E",
+      frontColor: item.colors.primary,
       spacing: 6,
       label: "W4",
     },
-    { value: 42, frontColor: "#BACD92" },
+    { value: 42, frontColor: item.colors.primaryLight },
   ];
 
   const renderDot = (color) => {
@@ -69,13 +69,13 @@ const BarChartComponent = () => {
               marginRight: 20,
             }}
           >
-            {renderDot("#6A994E")}
+            {renderDot(item.colors.primary)}
             <Text style={{ color: theme.colors.textDark }}>This Month</Text>
           </View>
           <View
             style={{ flexDirection: "row", alignItems: "center", width: 120 }}
           >
-            {renderDot("#BACD92")}
+            {renderDot(item.colors.primaryLight)}
             <Text style={{ color: theme.colors.textDark }}>Last Month</Text>
           </View>
         </View>
@@ -112,15 +112,15 @@ const BarChartComponent = () => {
             color: theme.colors.textDark,
             textAlign: "center",
           }}
-          // showLine
-          // lineConfig={{
-          //   color: "#F29C6E",
-          //   thickness: 3,
-          //   curved: true,
-          //   hideDataPoints: true,
-          //   shiftY: 20,
-          //   initialSpacing: -30,
-          // }}
+          showLine
+          lineConfig={{
+            color: item.colors.highlight2,
+            thickness: 3,
+            curved: true,
+            hideDataPoints: true,
+            shiftY: 20,
+            initialSpacing: -30,
+          }}
         />
       </View>
       {renderLegendComponent()}

@@ -52,7 +52,9 @@ const SummaryCard = ({ item, user }) => {
         <View style={styles.resultContainer}>
           {/* *****BEFORE AVG SCORE******* */}
           <View style={styles.resultColumnContainer}>
-            <Text style={styles.resultTitle}>🎾 {item.type} 🎾</Text>
+            <Text style={styles.resultTitleHeader}>
+              🎾 {item.type} Practice 🎾
+            </Text>
 
             <Text style={styles.resultTitle}>
               ✅ Total Turns: {item.practiceTurns}
@@ -75,7 +77,7 @@ const SummaryCard = ({ item, user }) => {
                 formatText={() => item.averageScore}
                 unfilledColor="#ededed"
                 borderColor="#ededed"
-                color={theme.colors.primary}
+                color={item.colors.primary}
                 direction="clockwise"
                 strokeCap="round"
                 thickness={16}
@@ -89,34 +91,25 @@ const SummaryCard = ({ item, user }) => {
             <Text style={styles.pieChartTitle}>
               ⭐️ Performance Details ⭐️
             </Text>
-            <PieChartComponent style={styles.pieChart} />
+            <PieChartComponent style={styles.pieChart} item={item} />
           </View>
 
           <View style={styles.resultColumnContainer}>
             <Text style={styles.resultTitle}>⭐️ Practice Time ⭐️</Text>
-            <BarChartComponent />
+            <BarChartComponent item={item} />
           </View>
 
           <View style={styles.resultColumnContainer}>
             <Text style={styles.resultTitle}>⭐️ My Practice Score ⭐️</Text>
-            <LineChartComponent />
+            <LineChartComponent item={item} />
           </View>
 
           <View style={styles.resultColumnContainer}>
             <Text style={styles.resultTitle}>⭐️ Your Summary ⭐️</Text>
             <View style={styles.resultTextContainer}>
-              <Text style={styles.resultText}>
-                👉 Fake instruction Fakytjrdfhgcne instruction Fake instruction
-                Fake instructiondghnb Fake
-              </Text>
-              <Text style={styles.resultText}>
-                👉 Fake instrucfghjmntion Fake instruction Famnvbgvhbcmnke
-                instruction Fake instruction Fakytjrdfhgcne
-              </Text>
-              <Text style={styles.resultText}>
-                👉 Fake instrucfghjmntion Fake instruction Famnvbgvhbcmnke
-                instruction Fake instruction Fakytjrdfhgcne
-              </Text>
+              <Text style={styles.resultText}>👉 {item.summary1}</Text>
+              <Text style={styles.resultText}>👉 {item.summary2}</Text>
+              <Text style={styles.resultText}>👉 {item.summary3}</Text>
             </View>
           </View>
         </View>

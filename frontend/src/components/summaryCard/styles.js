@@ -88,6 +88,12 @@ export const styles = StyleSheet.create({
     color: theme.colors.textDark,
     fontWeight: theme.fonts.bold,
   },
+  resultTitleHeader: {
+    fontSize: hp(2.8),
+    marginBottom: hp(2.5),
+    color: theme.colors.textDark,
+    fontWeight: theme.fonts.bold,
+  },
   circlestyle: {
     elevation: 2,
     overflow: "hidden",

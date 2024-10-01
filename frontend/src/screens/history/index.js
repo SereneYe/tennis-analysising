@@ -30,7 +30,6 @@ const HistoryScreen = () => {
   useEffect(() => {
     const focusListener = navigation.addListener("focus", () => {
       getPosts();
-      console.log(posts);
     });
 
     return () => {
@@ -87,7 +86,7 @@ const HistoryScreen = () => {
           data={posts}
           showsVerticalScrollIndicator={false}
           contentContainerStyle={styles.listStyle}
-          keyExtractor={(item, index) => item.id.toString()}
+          keyExtractor={(item, index) => item.recordId.toString()}
           renderItem={({ item }) => (
             <RecordCard item={item} user={user} navigation={navigation} />
           )}
