@@ -138,7 +138,7 @@ export default function CameraScreen({ route, navigation }) {
     if (!cameraRef.current) return null;
     setIsRecording(true);
     const videoPromise = await cameraRef.current.recordAsync({
-      maxDuration: 5,
+      maxDuration: 3,
       codec: "avc1",
     });
 
@@ -266,7 +266,7 @@ export default function CameraScreen({ route, navigation }) {
           {isRecording && (
             <View style={styles.countdownBarContainer}>
               <CountdownBar
-                time={5}
+                time={3}
                 height="3"
                 BgColor="rgba(139,0,0,0.8)"
                 BgColorIn="rgba(0, 0, 0, 0)"

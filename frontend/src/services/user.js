@@ -1,5 +1,6 @@
 import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
 import uuid from "uuid-random";
+import { backendURL } from "../constants/backendURL";
 
 let getAuth, auth, getFirestore, firestore, updateDoc;
 
@@ -86,9 +87,11 @@ export const updateUserInfo = (userData) => {
     if (!firestore) {
       await importFirestoreFunctions();
     }
+
     if (user) {
       try {
         await updateDoc(doc(firestore, "user", user.uid), userData);
+        // await updateUserDetail(user.uid, userData);
         console.log("User data successfully stored!");
         resolve({ success: true });
       } catch (error) {
@@ -100,6 +103,34 @@ export const updateUserInfo = (userData) => {
     }
   });
 };
+
+async function updateUserDetail(userId, userData) {
+  console.log("GET request started.");
+  try {
+    let response = await fetch(backendURL + "user/update_user", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        user_id: userId,
+        user_data: userData,
+      }),
+    });
+
+    console.log("POST request finished.");
+    if (!response.ok) {
+      console.error("POST request failed.", response.status);
+      throw new Error("Request failed with status " + response.status);
+    } else {
+      const data = await response.json();
+      return data;
+    }
+  } catch (error) {
+    console.error("There was an error with fetch!", error);
+    throw error;
+  }
+}
 
 let storageRef;
 export const createImage = (image) =>

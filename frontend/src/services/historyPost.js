@@ -72,21 +72,21 @@ export const fetchCurrentPost = async () => {
 // fetch Current Record Details by recordId
 ///////////////////////////////////////////
 export const fetchPostDetails = async (recordId) => {
-  await importFirestoreFunctions();
   //TODO: fetch posts by record_id
-  const recordResponse = await getRecordDetail(recordId);
-  if (recordResponse.success) {
-    const recordData = recordResponse.data;
-    console.log("recordData: ", recordData);
-    // await pushRecordToFirestore(recordData);
-    return { success: true, data: recordResponse.data };
-  }
-
+  await importFirestoreFunctions();
+  await importAuthFunctions();
   try {
+    const userId = auth.currentUser.uid;
+    // TODO: fetch current user posts
+    const recordResponse = await getRecordDetail(userId, recordId);
+    if (recordResponse.success) {
+      await pushRecordToFirestore(recordResponse.message);
+      return { success: true, data: recordResponse.message };
+    }
+
     const recordCollection = collection(firestore, "results");
     const q = query(recordCollection, where("recordId", "==", recordId));
     const querySnapshot = await getDocs(q);
-
     let record = null;
     querySnapshot.forEach((doc) => {
       record = {
@@ -141,7 +141,6 @@ export const fetchSummaryDetails = async (summaryType) => {
   try {
     const userId = auth.currentUser.uid;
     const recordResponse = await getSummaryByType(userId, summaryType);
-
     if (recordResponse.success) {
       addColors(recordResponse.message);
       pushSummaryToFirestore(recordResponse.message);
@@ -219,6 +218,7 @@ async function getCurrentUserRecord2(userId) {
 }
 
 async function getCurrentUserRecord(userId) {
+  return { success: false };
   return {
     success: true,
     message: [
@@ -400,16 +400,17 @@ async function getCurrentUserRecord(userId) {
   };
 }
 
-async function getRecordDetail2(recordId) {
+async function getRecordDetail2(userId, recordId) {
   console.log("GET request started.");
   try {
-    let response = await fetch(backendURL + "history/get_all_records", {
+    let response = await fetch(backendURL + "history/get_record", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
         user_id: userId,
+        record_id: recordId,
       }),
     });
 
@@ -428,6 +429,7 @@ async function getRecordDetail2(recordId) {
 }
 
 async function getRecordDetail(recordId) {
+  return { success: false };
   return {
     success: true,
     data: {
@@ -451,9 +453,11 @@ async function getRecordDetail(recordId) {
           image_url3:
             "https://firebasestorage.googleapis.com/v0/b/tiktok-clone-32fdc.appspot.com/o/testingTesting123%2Fbackhand3.png?alt=media&token=69c19243-ddd4-4f8a-8059-2c842586ec40",
           instruction1:
-            "hadsl ikfzxchj kmdsgzb wddefva abgsetrwd abesfdv sgaai lhf szxk lwqa ",
-          instruction2: "Wjkefnhsa ewa efwafad vf sfsdjk wef adwf afdfawefe",
-          instruction3: "zsfd awefds ehatrbdgs ,kghj zdbx fx szfawseff",
+            "Wow! you're swing is looking great, You're preparation is strong and precise!",
+          instruction2:
+            "You will need to twist your shoulders further around on the contact",
+          instruction3:
+            "See if you can keep your right elbow higher on the follow through",
         },
         {
           processed_video_id: "54367",
@@ -466,9 +470,11 @@ async function getRecordDetail(recordId) {
           image_url3:
             "https://firebasestorage.googleapis.com/v0/b/tiktok-clone-32fdc.appspot.com/o/testingTesting123%2Fbackhand3.png?alt=media&token=69c19243-ddd4-4f8a-8059-2c842586ec40",
           instruction1:
-            "hadsl ikfzxchj kmdsgzb wddefva abgsetrwd abesfdv sgaai lhf szxk lwqa ",
-          instruction2: "Wjkefnhsa ewa efwafad vf sfsdjk wef adwf afdfawefe",
-          instruction3: "zsfd awefds ehatrbdgs ,kghj zdbx fx szfawseff",
+            "Try to rotate your hips more aggressively as you swing through the ball.",
+          instruction2:
+            "Bend your knees more and get lower to the ground when the ball is lower.",
+          instruction3:
+            "Try to make contact with the ball at waist height and in front of your body.",
         },
         {
           processed_video_id: "45673",
@@ -481,9 +487,11 @@ async function getRecordDetail(recordId) {
           image_url3:
             "https://firebasestorage.googleapis.com/v0/b/tiktok-clone-32fdc.appspot.com/o/testingTesting123%2Fbackhand3.png?alt=media&token=69c19243-ddd4-4f8a-8059-2c842586ec40",
           instruction1:
-            "hadsl ikfzxchj kmdsgzb wddefva abgsetrwd abesfdv sgaai lhf szxk lwqa ",
-          instruction2: "Wjkefnhsa ewa efwafad vf sfsdjk wef adwf afdfawefe",
-          instruction3: "zsfd awefds ehatrbdgs ,kghj zdbx fx szfawseff",
+            "Relax your arm muscles for a smoother and more fluid swing.",
+          instruction2:
+            "Remember to pivot on your back foot during the swing for better balance.",
+          instruction3:
+            "Avoid rolling your wrist too much on impact to maintain a flat shot.",
         },
       ],
     },
@@ -496,30 +504,64 @@ async function deleteRecordDetail(recordId) {
   };
 }
 
+async function getSummaryByType2(userId, summaryType) {
+  console.log("GET request started.");
+  try {
+    let response = await fetch(
+      backendURL + "history/get_stats_by_stroke_type",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          user_id: userId,
+          stroke_type: summaryType,
+        }),
+      }
+    );
+
+    console.log("POST request finished.");
+    if (!response.ok) {
+      console.error("POST request failed.", response.status);
+      throw new Error("Request failed with status " + response.status);
+    } else {
+      const data = await response.json();
+      console.log("data: ", data);
+      return data;
+    }
+  } catch (error) {
+    console.error("There was an error with fetch!", error);
+    throw error;
+  }
+}
+
 async function getSummaryByType(userId, summaryType) {
-  return { success: false, error: "No data found" };
+  // return {
+  //   success: false,
+  //   message: {},
+  // };
   return {
     success: true,
     message: {
-      type: "Forehand",
+      type: "Backhand",
       userId: "pMJgk78kGzO6zXlLw1M9bd3Mw9q1",
-      averageScore: 82,
+      averageScore: 83,
       practiceTurns: 45,
       totalTime: 434,
       progress: 0.45,
       maxScore: 88,
       practiceTime: 489,
-      performanceDetail: { excellent: 35, good: 25, fair: 25, poor: 15 },
+      performanceDetail: { excellent: 49, good: 20, fair: 21, poor: 10 },
       pastScore: [65, 77, 69, 71, 82, 88, 89, 90, 84, 87, 88, 79, 82, 79, 91],
-      summary1: "zsdjf dAWD AWDH zdsfgzdbf szfSDEE szbfddytj sdfbdsfb erfra",
+      summary1:
+        "Steady on! Your consistent scores show your dedication. One more challenge: refine your accuracy to reduce those extra incorrect actions.",
       summary2:
-        "adsgf zdfbvc vdsfz dfvzac gsdfvz dgfvbcx vfdrr zdfbxcva gxbdfv",
-      summary3:
-        "adsgf zdfbvc vdsfz dfvzac gsdfvz dgfvbcx vfdrr zdfbxcva gxbdfv",
+        "A minor drop in scores is just another reason to shine. The decrease in incorrect actions is testament to your improved precision. ",
+      summary3: "You're getting better every day!",
     },
   };
 }
-
 ////////////////////////////////
 // Helper function to add color here
 ////////////////////////////////

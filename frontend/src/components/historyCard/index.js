@@ -26,6 +26,7 @@ const HistoryCard = ({
   showDelete = false,
   showResult = false,
   onDelete = () => {},
+  type,
 }) => {
   const htmlBody = { html: item?.body };
 
@@ -144,6 +145,7 @@ const HistoryCard = ({
             key={item.processed_video_id}
             item={item}
             index={index}
+            type={type}
           />
         )}
         style={{ width: "100%" }}

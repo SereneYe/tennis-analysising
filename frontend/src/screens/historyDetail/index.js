@@ -110,6 +110,7 @@ const HistoryDetailScreen = () => {
           showDelete={true}
           showResult={true}
           onDelete={onDeleteDetail}
+          type={item.recordType}
         />
       </ScrollView>
     </View>

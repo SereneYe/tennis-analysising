@@ -1,4 +1,5 @@
 import uuid from "uuid-random";
+import { backendURL } from "../../constants/backendURL";
 
 let getAuth, auth, getFirestore, firestore, Timestamp;
 
@@ -110,12 +111,7 @@ export const createPost =
                   );
 
                   // TODO: Uncomment this line to send the post data to the backend
-                  // await sendPostData(postData, reject)
-                  //   .then(() => console.log("Post data sent to backend."))
-                  //   .catch(() =>
-                  //     console.log("There was an error while sending post data.")
-                  //   )
-                  //   .finally(() => resolve());
+                  await sendPostData(postData, reject);
 
                   resolve();
                 }
@@ -130,16 +126,13 @@ export const createPost =
     });
 
 async function sendPostData(postData, reject) {
-  let response = await fetch(
-    "http://10.89.129.125:7381/video_process/process_video",
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(postData),
-    }
-  );
+  let response = await fetch(backendURL + "video_process/process_video", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(postData),
+  });
   if (!response.ok) {
     console.error("POST request failed.", response.status);
     reject();
