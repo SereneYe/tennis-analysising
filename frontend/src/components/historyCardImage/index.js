@@ -4,6 +4,7 @@ import { theme } from "../../constants/theme";
 import { hp, wp } from "../../constants/common";
 import { Video } from "expo-av";
 import { styles } from "./styles";
+import * as Progress from "react-native-progress";
 
 export const HistoryCardImageContainer = ({ item, index, type }) => {
   let compare_url1 = "",
@@ -38,6 +39,26 @@ export const HistoryCardImageContainer = ({ item, index, type }) => {
         {"---------------" + " TURN " + (index + 1) + " ---------------"}
       </Text>
       <View style={styles.resultColumnContainer}>
+        <Text style={styles.resultTitle}>⭐️ Your Turn Score ⭐️</Text>
+        <View style={{ alignSelf: "center" }}>
+          <Progress.Circle
+            size={120}
+            showsText={true}
+            progress={(item.score || 76) / 100}
+            formatText={() => item.score || 76}
+            unfilledColor="#ededed"
+            borderColor="#ededed"
+            color={theme.colors.primary}
+            direction="clockwise"
+            strokeCap="round"
+            thickness={12}
+            style={styles.circlestyle}
+            textStyle={styles.textStyle}
+          />
+        </View>
+      </View>
+
+      <View style={styles.resultColumnContainer}>
         <Text style={styles.resultTitle}>⭐️ Stage 1 Comparison ⭐️</Text>
         <View style={styles.resultImageContainer}>
           <Image
@@ -48,6 +69,11 @@ export const HistoryCardImageContainer = ({ item, index, type }) => {
             source={{ uri: compare_url1 }}
             style={{ ...styles.resultImage }}
           />
+        </View>
+
+        <Text style={styles.resultTitle}>🎯 Your Instruction </Text>
+        <View style={styles.resultTextContainer}>
+          <Text style={styles.resultText}>👉 {item.instruction1}</Text>
         </View>
         <Text style={styles.resultTitle}>⭐️ Stage 2 Comparison ⭐️</Text>
         <View style={styles.resultImageContainer}>
@@ -60,6 +86,12 @@ export const HistoryCardImageContainer = ({ item, index, type }) => {
             style={{ ...styles.resultImage }}
           />
         </View>
+
+        <Text style={styles.resultTitle}>🎯 Your Instruction </Text>
+        <View style={styles.resultTextContainer}>
+          <Text style={styles.resultText}>👉 {item.instruction2}</Text>
+        </View>
+
         <Text style={styles.resultTitle}>⭐️ Stage 3 Comparison ⭐️</Text>
         <View style={styles.resultImageContainer}>
           <Image
@@ -71,13 +103,9 @@ export const HistoryCardImageContainer = ({ item, index, type }) => {
             style={{ ...styles.resultImage }}
           />
         </View>
-      </View>
 
-      <View style={styles.resultColumnContainer}>
-        <Text style={styles.resultTitle}>⭐️ Your Instruction ⭐️</Text>
+        <Text style={styles.resultTitle}>🎯 Your Instruction </Text>
         <View style={styles.resultTextContainer}>
-          <Text style={styles.resultText}>👉 {item.instruction1}</Text>
-          <Text style={styles.resultText}>👉 {item.instruction2}</Text>
           <Text style={styles.resultText}>👉 {item.instruction3}</Text>
         </View>
       </View>

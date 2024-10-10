@@ -80,7 +80,7 @@ export const fetchPostDetails = async (recordId) => {
     // TODO: fetch current user posts
     const recordResponse = await getRecordDetail(userId, recordId);
     if (recordResponse.success) {
-      await pushRecordToFirestore(recordResponse.message);
+      // await pushRecordToFirestore(recordResponse.message);
       return { success: true, data: recordResponse.message };
     }
 
@@ -190,7 +190,7 @@ const pushSummaryToFirestore = async (summaryData) =>
 //////////////////////////////////////////////
 // TODO: Mock data for testing
 //////////////////////////////////////////////
-async function getCurrentUserRecord2(userId) {
+async function getCurrentUserRecord(userId) {
   console.log("GET request started.");
   try {
     let response = await fetch(backendURL + "history/get_all_records", {
@@ -217,7 +217,7 @@ async function getCurrentUserRecord2(userId) {
   }
 }
 
-async function getCurrentUserRecord(userId) {
+async function getCurrentUserRecord2(userId) {
   return { success: false };
   return {
     success: true,
@@ -400,7 +400,7 @@ async function getCurrentUserRecord(userId) {
   };
 }
 
-async function getRecordDetail2(userId, recordId) {
+async function getRecordDetail(userId, recordId) {
   console.log("GET request started.");
   try {
     let response = await fetch(backendURL + "history/get_record", {
@@ -428,7 +428,7 @@ async function getRecordDetail2(userId, recordId) {
   }
 }
 
-async function getRecordDetail(recordId) {
+async function getRecordDetail2(recordId) {
   return { success: false };
   return {
     success: true,
@@ -458,6 +458,7 @@ async function getRecordDetail(recordId) {
             "You will need to twist your shoulders further around on the contact",
           instruction3:
             "See if you can keep your right elbow higher on the follow through",
+          score: 79,
         },
         {
           processed_video_id: "54367",
@@ -475,6 +476,7 @@ async function getRecordDetail(recordId) {
             "Bend your knees more and get lower to the ground when the ball is lower.",
           instruction3:
             "Try to make contact with the ball at waist height and in front of your body.",
+          score: 89,
         },
         {
           processed_video_id: "45673",
@@ -492,19 +494,14 @@ async function getRecordDetail(recordId) {
             "Remember to pivot on your back foot during the swing for better balance.",
           instruction3:
             "Avoid rolling your wrist too much on impact to maintain a flat shot.",
+          score: 81,
         },
       ],
     },
   };
 }
 
-async function deleteRecordDetail(recordId) {
-  return {
-    success: true,
-  };
-}
-
-async function getSummaryByType2(userId, summaryType) {
+async function getSummaryByType(userId, summaryType) {
   console.log("GET request started.");
   try {
     let response = await fetch(
@@ -536,7 +533,7 @@ async function getSummaryByType2(userId, summaryType) {
   }
 }
 
-async function getSummaryByType(userId, summaryType) {
+async function getSummaryByType2(userId, summaryType) {
   // return {
   //   success: false,
   //   message: {},
@@ -560,6 +557,12 @@ async function getSummaryByType(userId, summaryType) {
         "A minor drop in scores is just another reason to shine. The decrease in incorrect actions is testament to your improved precision. ",
       summary3: "You're getting better every day!",
     },
+  };
+}
+
+async function deleteRecordDetail(recordId) {
+  return {
+    success: true,
   };
 }
 ////////////////////////////////

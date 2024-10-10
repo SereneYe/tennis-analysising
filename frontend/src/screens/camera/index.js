@@ -113,7 +113,9 @@ export default function CameraScreen({ route, navigation }) {
         playSound();
       }
 
-      await new Promise((resolve) => setTimeout(resolve, 3000));
+      await new Promise((resolve) => setTimeout(resolve, 5000));
+      playAlertSound();
+
       setShowProgress(false);
       const videoAddr = await recordVideo();
       if (videoAddr) {
@@ -216,6 +218,16 @@ export default function CameraScreen({ route, navigation }) {
     await sound.playAsync();
   }
 
+  async function playAlertSound() {
+    console.log("Loading Sound");
+
+    const { sound } = await Audio.Sound.createAsync(
+      require("../../assets/voice/alert.mp3")
+    );
+    setSound(sound);
+    await sound.playAsync();
+  }
+
   // useEffect(() => {
   //   return sound
   //     ? () => {
@@ -279,12 +291,12 @@ export default function CameraScreen({ route, navigation }) {
               <CircularProgress
                 value={0}
                 radius={80}
-                maxValue={3}
-                initialValue={3}
+                maxValue={5}
+                initialValue={5}
                 progressValueColor={"#fff"}
                 activeStrokeWidth={15}
                 inActiveStrokeWidth={15}
-                duration={3000}
+                duration={5000}
               />
             </View>
           ) : null}

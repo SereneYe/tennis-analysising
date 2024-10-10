@@ -111,7 +111,7 @@ export const createPost =
                   );
 
                   // TODO: Uncomment this line to send the post data to the backend
-                  await sendPostData(postData, reject);
+                  // await sendPostData(postData, reject);
 
                   resolve();
                 }
