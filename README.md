@@ -26,29 +26,29 @@ Features
 
 https://i.postimg.cc/wMPcpXvc/IMG-4504.png
 
-# When you first use this application, sign up for a user account with an email linked with "@XXX.XXX" and a password of at least six characters.
+### When you first use this application, sign up for a user account with an email linked with "@XXX.XXX" and a password of at least six characters.
 
 ## Home Page:
 
 https://i.postimg.cc/3J4FZcSL/IMG-4505.png
 
-# Progress Tracking: Easily monitor your overall training progress right from the homepage.
+### Progress Tracking: Easily monitor your overall training progress right from the homepage.
 
-# Tutorial Videos: Get access to a variety of tutorial videos, ensuring your workout form is spot-on every time.
+### Tutorial Videos: Get access to a variety of tutorial videos, ensuring your workout form is spot-on every time.
 
-# Exercise Metrics: Click on individual exercise progress bars for a detailed view of your performance in each workout.
+### Exercise Metrics: Click on individual exercise progress bars for a detailed view of your performance in each workout.
 
 ## Summary Page:
 
 https://i.postimg.cc/XY5xnz9Z/IMG-4528.jpg
 
-# Summary Page providing a comprehensive view of your workout journey.
+### Summary Page providing a comprehensive view of your workout journey.
 
 ## Profile Page:
 
 https://i.postimg.cc/dtp4PYZP/IMG-4530.png
 
-# Profile Page is designed to personalize your experience and improve the app's understanding of your performance, which includes specifying your dominant hand (left or right), height, weight, avatar and so on.
+### Profile Page is designed to personalize your experience and improve the app's understanding of your performance, which includes specifying your dominant hand (left or right), height, weight, avatar and so on.
 
 https://i.postimg.cc/bYFRkhTD/IMG-4518.png
 
