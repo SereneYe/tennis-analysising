@@ -123,9 +123,10 @@ export const deletePostDetails = async (itemId) => {
   await importFirestoreFunctions();
   console.log("deletePostDetails: ", itemId);
   try {
-    const rawVideoCollection = collection(firestore, "results");
-    const docRef = doc(rawVideoCollection, itemId);
-    await deleteDoc(docRef);
+    // const rawVideoCollection = collection(firestore, "results");
+    // const docRef = doc(rawVideoCollection, itemId);
+    // await deleteDoc(docRef);
+    deleteRecordDetail(itemId);
     return { success: true };
   } catch (error) {
     console.error("Error deleting posts: ", error);
@@ -501,7 +502,7 @@ async function getRecordDetail2(recordId) {
   };
 }
 
-async function getSummaryByType(userId, summaryType) {
+async function getSummaryByType2(userId, summaryType) {
   console.log("GET request started.");
   try {
     let response = await fetch(
@@ -533,11 +534,11 @@ async function getSummaryByType(userId, summaryType) {
   }
 }
 
-async function getSummaryByType2(userId, summaryType) {
-  // return {
-  //   success: false,
-  //   message: {},
-  // };
+async function getSummaryByType(userId, summaryType) {
+  return {
+    success: false,
+    message: {},
+  };
   return {
     success: true,
     message: {
@@ -561,9 +562,31 @@ async function getSummaryByType2(userId, summaryType) {
 }
 
 async function deleteRecordDetail(recordId) {
-  return {
-    success: true,
-  };
+  console.log("GET request started.");
+  try {
+    let response = await fetch(backendURL + "history/delete_record", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        record_id: recordId,
+      }),
+    });
+
+    console.log("POST request finished.");
+    if (!response.ok) {
+      console.error("POST request failed.", response.status);
+      throw new Error("Request failed with status " + response.status);
+    } else {
+      const data = await response.json();
+      console.log("data: ", data);
+      return data;
+    }
+  } catch (error) {
+    console.error("There was an error with fetch!", error);
+    throw error;
+  }
 }
 ////////////////////////////////
 // Helper function to add color here

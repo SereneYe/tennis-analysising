@@ -75,8 +75,9 @@ const HistoryDetailScreen = () => {
     );
   }
 
-  const onDeleteDetail = async (historyId) => {
-    let res = await deletePostDetails(historyId.id);
+  const onDeleteDetail = async (history) => {
+    console.log("Deleting post: ", history);
+    let res = await deletePostDetails(history.recordId);
 
     if (res.success) {
       console.log("Post deleted successfully");
