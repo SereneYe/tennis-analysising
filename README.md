@@ -35,36 +35,41 @@ For iOS: Use the default scanner of iOS (no scanner in ios Expo).
 
 Features:
 
-## Sign Up & Login Page:
+# Welcome to Our Application
 
-[![IMG-4504.png](https://i.postimg.cc/wMPcpXvc/IMG-4504.png)](https://postimg.cc/hQL787Vf)
-When you first use this application, sign up for a user account with an email linked with "@XXX.XXX" and a password of at least six characters.
+## Sign Up & Login Page
 
-## Home Page:
+![Sign Up](https://i.postimg.cc/wMPcpXvc/IMG-4504.png)
+To get started with the application, sign up for a user account. You must use an email linked with "@XXX.XXX" and a password with at least six characters.
 
-[![IMG-4505.png](https://i.postimg.cc/3J4FZcSL/IMG-4505.png)](https://postimg.cc/KRbTGJyL)
-·Progress Tracking: Easily monitor your overall training progress right from the homepage.
-·Tutorial Videos: Get access to a variety of tutorial videos, ensuring your workout form is spot-on every time.
-·Exercise Metrics: Click on individual exercise progress bars for a detailed view of your performance in each workout.
+## Home Page
 
-## Summary Page:
+![Home](https://i.postimg.cc/3J4FZcSL/IMG-4505.png)
 
-[![IMG-4528.jpg](https://i.postimg.cc/XY5xnz9Z/IMG-4528.jpg)](https://postimg.cc/w16DVFfH)
-·Summary Page providing a comprehensive view of your workout journey.
+- **Progress Tracking:** Easily monitor your overall training progress from the homepage.
+- **Tutorial Videos:** Access to a variety of tutorial videos to ensure your workout form is spot on.
+- **Exercise Metrics:** Click on individual exercise progress bars to view detailed performance metrics for each workout.
 
-## Profile Page:
+## Summary Page
 
-[![IMG-4530.png](https://i.postimg.cc/dtp4PYZP/IMG-4530.png)](https://postimg.cc/8jdhMxbt)
-·Profile Page is designed to personalize your experience and improve the app's understanding of your performance, which includes specifying your dominant hand (left or right), height, weight, avatar and so on.
+![Summary](https://i.postimg.cc/XY5xnz9Z/IMG-4528.jpg)
+The Summary Page provides a comprehensive overview of your workout journey.
+
+## Profile Page
+
+![Profile](https://i.postimg.cc/dtp4PYZP/IMG-4530.png)
+The Profile Page allows you to personalize your experience and improve the app's understanding of your performance. You can specify your dominant hand (left or right), height, weight, avatar, and more.
 
 ## Add Content Page
 
-[![IMG-4518.png](https://i.postimg.cc/bYFRkhTD/IMG-4518.png)](https://postimg.cc/nMB7fNNp)
-· Add Content: Click the add icon to start recording. If you are a new user, open all the permissions for gallery, video, and voice. You could either shoot the video to upload or select videos from the gallery. Each Turn Practice will have 5s waiting period and 3s practicing time, follow the voice instruction to do your practice!
+![Adding content](https://i.postimg.cc/bYFRkhTD/IMG-4518.png)
+You can click on the Add icon to start recording. If you're a new user, make sure all permissions for the gallery, video, and voice are enabled. You can shoot a video directly or select videos from the gallery. Each Turn Practice will have a 5-second waiting period and a 3-second practice time. Follow the voice instruction to get started!
 
 ## Resulting Page
 
-[![IMG-4532.png](https://i.postimg.cc/nrMYgRHh/IMG-4532.png)](https://postimg.cc/m1fHFSzv)
-[![IMG-4531.png](https://i.postimg.cc/pTsJ0bMS/IMG-4531.png)](https://postimg.cc/MMjBTLT0)
-[![IMG-4529.jpg](https://i.postimg.cc/vmdhTtv0/IMG-4529.jpg)](https://postimg.cc/RWXKbfyt)
-· You can see your profile in the history page or under the profile page by clicking the triple dot icon. Have fun!
+![Result page 1](https://i.postimg.cc/nrMYgRHh/IMG-4532.png)
+![Result page 2](https://i.postimg.cc/pTsJ0bMS/IMG-4531.png)
+![Result page 3](https://i.postimg.cc/vmdhTtv0/IMG-4529.jpg)
+After finishing your workouts, you can view your profile on the history page or under the profile page by clicking the triple dot icon.
+
+Enjoy your workout journey with our application!
