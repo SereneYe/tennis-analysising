@@ -113,8 +113,9 @@ export default function CameraScreen({ route, navigation }) {
         playSound();
       }
 
-      await new Promise((resolve) => setTimeout(resolve, 5000));
+      await new Promise((resolve) => setTimeout(resolve, 4550));
       playAlertSound();
+      await new Promise((resolve) => setTimeout(resolve, 450));
 
       setShowProgress(false);
       const videoAddr = await recordVideo();

@@ -1,26 +1,39 @@
-<!-- PROJECT NAME -->
+# SwingTheory
 
-SwingTheory
+## Getting Started
 
-Getting Started
+### Prerequisites
 
-<!-- Prerequisites -->
+- Download the Expo app on your smartphone.
+- In your terminal, navigate to the frontend directory of the project:
+  ```bash
+  cd frontend
+  ```
 
-Download the Expo app on your smartphone.
-In your terminal, navigate to the frontend directory of the project:
-cd frontend
+### Installation
 
-<!-- Installation -->
+- Install the required node modules:
+  ```bash
+  npm install
+  ```
+- Run the code in the frontend folders:
+  ```bash
+  npx expo start
+  ```
 
-Install the required node modules:
-npm install
-Run the code in the frontend folders:
-npx expo start
-Connecting to a Phone
-Android: Scan the QR code in Expo
-iOS: Use the default scanner of iOS (no scanner in ios Expo)
+## Connecting to a Phone
 
-Features
+For Android: Scan the QR code in Expo
+
+For iOS: Use the default scanner of iOS (no scanner in ios Expo).
+
+## Softwares utilized:
+
+**React Native**: Our application uses React Native for building our cross-platform mobile applications. The source code and more information can be found at their [GitHub page](https://github.com/facebook/react-native).
+
+**Firebase**: Our application utilizes Google's Firebase for data storage and real-time updates. More information and source code could be accessed at [Firebase's official website](https://firebase.google.com/).
+
+Features:
 
 ## Sign Up & Login Page:
 

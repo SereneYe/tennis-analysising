@@ -64,7 +64,7 @@ const SummaryCard = ({ item, user }) => {
               ⏱️ Total Time: {item.practiceTime} min
             </Text>
             <Text style={styles.resultTitle}>
-              🎯 Progress: {(item.practiceTime / 600) * 100}%
+              🎯 Progress: {((item.practiceTime / 600) * 100).toFixed(2)}%
             </Text>
           </View>
           <View style={styles.resultColumnContainer}>

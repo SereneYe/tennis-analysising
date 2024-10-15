@@ -144,7 +144,7 @@ export const fetchSummaryDetails = async (summaryType) => {
     const recordResponse = await getSummaryByType(userId, summaryType);
     if (recordResponse.success) {
       addColors(recordResponse.message);
-      pushSummaryToFirestore(recordResponse.message);
+      // pushSummaryToFirestore(recordResponse.message);
       return { success: true, data: recordResponse.message };
     }
     const recordCollection = collection(firestore, "summaries");
@@ -542,21 +542,22 @@ async function getSummaryByType(userId, summaryType) {
   return {
     success: true,
     message: {
-      type: "Backhand",
+      type: "Serve",
       userId: "pMJgk78kGzO6zXlLw1M9bd3Mw9q1",
-      averageScore: 83,
-      practiceTurns: 45,
-      totalTime: 434,
-      progress: 0.45,
-      maxScore: 88,
-      practiceTime: 489,
-      performanceDetail: { excellent: 49, good: 20, fair: 21, poor: 10 },
-      pastScore: [65, 77, 69, 71, 82, 88, 89, 90, 84, 87, 88, 79, 82, 79, 91],
+      averageScore: 81,
+      practiceTurns: 21,
+      totalTime: 435,
+      progress: 0.59,
+      maxScore: 87,
+      practiceTime: 168,
+      performanceDetail: { excellent: 39, good: 22, fair: 28, poor: 11 },
+      pastScore: [65, 73, 76, 69, 72, 84, 81, 85, 78, 81, 82, 77, 80, 79, 86],
       summary1:
-        "Steady on! Your consistent scores show your dedication. One more challenge: refine your accuracy to reduce those extra incorrect actions.",
+        "Exceptional show of tenacity! Your continuous Serve drills exhibit your strong commitment. Challenge yourself to minimize faults in your Serve to improve your game even more.",
       summary2:
-        "A minor drop in scores is just another reason to shine. The decrease in incorrect actions is testament to your improved precision. ",
-      summary3: "You're getting better every day!",
+        "Small decline in your scores merely signifies another chance to excel. The lowered number of faulty Serves is a positive sign of your evolving precision.",
+      summary3:
+        "You're achieving prominent advancement in your Serve! Each practice is evidently adding to your progress, keep maintaining this momentum!",
     },
   };
 }
